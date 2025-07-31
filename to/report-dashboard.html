@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职业教育升学咨询报告仪表板</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .report-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .report-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .card-header h2 {
+            color: #4b6cb7;
+            font-size: 1.8rem;
+        }
+        
+        .report-meta {
+            background: #eef2f7;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #4b6cb7;
+            font-weight: 500;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4b6cb7;
+            transition: all 0.3s ease;
+        }
+        
+        .info-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        
+        .info-item h3 {
+            color: #4b6cb7;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-item p {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section h2 {
+            color: #4b6cb7;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-content {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        
+        .section-content p {
+            margin-bottom: 15px;
+        }
+        
+        .section-content ul, .section-content ol {
+            padding-left: 30px;
+            margin: 15px 0;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .section-content strong {
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #4b6cb7;
+            border: 1px solid #ddd;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #3a5ca5 0%, #121f3d 100%);
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .report-meta {
+                align-self: flex-start;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .report-card {
+                padding: 20px 15px;
+            }
+            
+            .info-item {
+                padding: 15px;
+            }
+            
+            .info-item h3 {
+                font-size: 1rem;
+            }
+            
+            .info-item p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>
+                <img src="1111.png" alt="图标" style="height: 2.5em; vertical-align: middle; margin-right: 15px;">
+                <i class="fas fa-graduation-cap"></i> 职业教育升学咨询报告
+            </h1>
+            <p>一对一职业教育升学智能顾问</p>
+        </div>
+        
+        <div class="report-card">
+            <div class="card-header">
+                <h2 id="report-title">报告详情</h2>
+                <div class="report-meta">
+                    <span id="consultation-type"></span>
+                </div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3><i class="fas fa-user"></i> 学生姓名</h3>
+                    <p id="student-name">未知</p>
+                </div>
+                <div class="info-item">
+                    <h3><i class="fas fa-calendar-alt"></i> 咨询日期</h3>
+                    <p id="consultation-date">--</p>
+                </div>
+                <div class="info-item">
+                    <h3><i class="fas fa-file-alt"></i> 报告生成时间</h3>
+                    <p id="generated-date">--</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><i class="fas fa-star"></i> 咨询摘要</h2>
+                <div id="summary" class="section-content">
+                    <!-- 摘要内容将通过JavaScript填充 -->
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><i class="fas fa-comments"></i> 详细咨询记录</h2>
+                <div id="details" class="section-content">
+                    <!-- 详细内容将通过JavaScript填充 -->
+                </div>
+            </div>
+            
+            <!-- 新增AI总结推荐区块 -->
+            <div class="section">
+                <h2><i class="fas fa-robot"></i> AI总结与推荐</h2>
+                <div id="ai-summary" class="section-content">
+                    <div id="ai-recommendation-loading" style="text-align: center; padding: 20px;">
+                        <p><i class="fas fa-spinner fa-spin"></i> 正在生成个性化推荐...</p>
+                    </div>
+                    <div id="ai-recommendation-content" style="display: none;">
+                        <h3>总结</h3>
+                        <p id="ai-summary-text"></p>
+                        
+                        <h3>推荐</h3>
+                        <div id="ai-recommendations"></div>
+                        
+                        <h3>下一步行动</h3>
+                        <ul id="ai-next-steps"></ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 结束AI总结推荐区块 -->
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="print-btn">
+                    <i class="fas fa-print"></i> 打印报告
+                </button>
+                <button class="btn btn-secondary" id="export-btn">
+                    <i class="fas fa-download"></i> 导出报告
+                </button>
+            </div>
+            
+            <div class="footer">
+                <p>报告生成于：<span id="footer-generated-date">--</span></p>
+                <p>HSX职业教育升学智能顾问 © 2025</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 从URL参数获取报告数据
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            const data = {
+                studentName: params.get('studentName') || '未知',
+                reportTitle: params.get('reportTitle') || '职业教育升学咨询报告',
+                consultationType: params.get('consultationType') || '综合咨询',
+                date: params.get('date') || new Date().toLocaleDateString('zh-CN'),
+                generatedDate: params.get('generatedDate') || new Date().toLocaleString('zh-CN'),
+                summary: params.get('summary') || '本次咨询围绕职业教育升学相关问题展开，主要涉及升学途径、院校选择、专业介绍等方面的内容。咨询顾问根据学生的具体情况，提供了个性化的建议和指导。',
+                details: params.get('details') || ''
+            };
+            
+            // 更安全的解码方式，避免二次解码导致的乱码
+            Object.keys(data).forEach(key => {
+                try {
+                    // 检查是否需要解码（通过检查是否包含编码字符）
+                    if (data[key] && (data[key].includes('%') || data[key].includes('+'))) {
+                        data[key] = decodeURIComponent(data[key]);
+                    }
+                } catch (e) {
+                    console.warn(`解码参数 ${key} 时出错:`, e);
+                    // 如果解码失败，保持原始值
+                }
+            });
+            
+            return data;
+        }
+
+        // 生成AI总结和推荐
+        async function generateAISummaryAndRecommendations(details) {
+            // 显示加载状态
+            document.getElementById('ai-recommendation-loading').style.display = 'block';
+            document.getElementById('ai-recommendation-content').style.display = 'none';
+            
+            try {
+                // 模拟API调用延迟
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // 分析对话历史以生成个性化推荐
+                // 从对话详情中提取关键信息
+                let educationStage = "";  // 教育阶段
+                let interestedFields = []; // 感兴趣的专业领域
+                let升学目标 = "";  // 升学目标
+                
+                // 简单的关键词匹配来提取信息
+                if (details.includes("中职") || details.includes("职业高中")) {
+                    educationStage = "中职阶段";
+                } else if (details.includes("高职") || details.includes("大专")) {
+                    educationStage = "高职阶段";
+                }
+                
+                if (details.includes("计算机")) {
+                    interestedFields.push("计算机技术");
+                }
+                if (details.includes("护理")) {
+                    interestedFields.push("护理学");
+                }
+                if (details.includes("机械")) {
+                    interestedFields.push("机械工程");
+                }
+                if (details.includes("电子")) {
+                    interestedFields.push("电子技术");
+                }
+                if (details.includes("汽车")) {
+                    interestedFields.push("汽车维修");
+                }
+                if (details.includes("建筑")) {
+                    interestedFields.push("建筑工程");
+                }
+                if (details.includes("会计")) {
+                    interestedFields.push("会计学");
+                }
+                if (details.includes("学前教育")) {
+                    interestedFields.push("学前教育");
+                }
+                
+                if (details.includes("专升本")) {
+                   升学目标 = "专升本";
+                } else if (details.includes("职业本科")) {
+                   升学目标 = "职业本科";
+                } else if (details.includes("就业")) {
+                   升学目标 = "直接就业";
+                }
+                
+                // 生成AI总结
+                let aiSummary = "根据您的咨询记录，";
+                if (educationStage) {
+                    aiSummary += `您目前处于${educationStage}，`;
+                }
+                if (interestedFields.length > 0) {
+                    aiSummary += `对${interestedFields.join("和")}表现出浓厚兴趣，`;
+                }
+                if (升学目标) {
+                    aiSummary += `并希望${升学目标}。`;
+                }
+                
+                // 如果没有提取到具体信息，使用默认总结
+                if (aiSummary === "根据您的咨询记录，") {
+                    aiSummary = "根据您的咨询记录，您主要关注职业教育升学的升学途径、专业选择和就业前景。您目前对计算机专业和护理专业表现出浓厚兴趣，同时希望了解专升本的相关政策和要求。";
+                }
+                
+                // 定义院校和企业数据库
+                const institutions = {
+                    "计算机技术": [
+                        "XX职业技术学院 - 计算机应用技术专业",
+                        "YY科技职业学院 - 软件技术专业",
+                        "ZZ信息工程学院 - 网络工程专业"
+                    ],
+                    "护理学": [
+                        "AA卫生学校 - 护理专业",
+                        "BB医学院 - 护理学专业",
+                        "CC健康职业学院 - 老年护理专业"
+                    ],
+                    "机械工程": [
+                        "DD机械职业学院 - 机械制造与自动化专业",
+                        "EE工程技术学院 - 机电一体化技术专业",
+                        "FF智能制造学院 - 工业机器人技术专业"
+                    ],
+                    "电子技术": [
+                        "GG电子科技学院 - 电子信息工程技术专业",
+                        "HH通信职业学院 - 通信技术专业",
+                        "II电气工程学院 - 电气自动化技术专业"
+                    ],
+                    "汽车维修": [
+                        "JJ汽车职业学院 - 汽车检测与维修技术专业",
+                        "KK交通运输学院 - 新能源汽车技术专业",
+                        "LL机械工程学院 - 汽车服务工程专业"
+                    ],
+                    "建筑工程": [
+                        "MM建筑职业学院 - 建筑工程技术专业",
+                        "NN土木工程学院 - 建筑工程管理专业",
+                        "OO城乡建设学院 - 建筑装饰工程技术专业"
+                    ],
+                    "会计学": [
+                        "PP财经职业学院 - 会计专业",
+                        "QQ经济管理学院 - 财务管理专业",
+                        "RR商学院 - 会计学专业"
+                    ],
+                    "学前教育": [
+                        "SS师范职业学院 - 学前教育专业",
+                        "TT教育学院 - 学前教育学专业",
+                        "UU幼儿师范学院 - 幼儿发展与健康管理专业"
+                    ]
+                };
+                
+                const companies = {
+                    "计算机技术": [
+                        "华为技术有限公司",
+                        "腾讯科技有限公司",
+                        "阿里巴巴集团",
+                        "字节跳动有限公司"
+                    ],
+                    "护理学": [
+                        "XX市人民医院",
+                        "YY医疗集团",
+                        "ZZ健康养老服务有限公司",
+                        "AA社区卫生服务中心"
+                    ],
+                    "机械工程": [
+                        "中国中车集团有限公司",
+                        "三一重工股份有限公司",
+                        "徐工集团工程机械有限公司",
+                        "潍柴控股集团有限公司"
+                    ],
+                    "电子技术": [
+                        "海尔集团公司",
+                        "海信集团有限公司",
+                        "京东方科技集团股份有限公司",
+                        "歌尔股份有限公司"
+                    ],
+                    "汽车维修": [
+                        "一汽-大众汽车有限公司",
+                        "上汽通用五菱汽车股份有限公司",
+                        "比亚迪汽车有限公司",
+                        "吉利汽车控股有限公司"
+                    ],
+                    "建筑工程": [
+                        "中国建筑集团有限公司",
+                        "万科企业股份有限公司",
+                        "碧桂园控股有限公司",
+                        "恒大集团"
+                    ],
+                    "会计学": [
+                        "普华永道会计师事务所",
+                        "德勤华永会计师事务所",
+                        "立信会计师事务所",
+                        "天健会计师事务所"
+                    ],
+                    "学前教育": [
+                        "北京红黄蓝科技发展有限公司",
+                        "上海大地幼儿园",
+                        "广州碧桂园实验学校",
+                        "深圳实验幼儿园"
+                    ]
+                };
+                
+                // 生成具体的升学或工作路径推荐
+                let aiRecommendations = [];
+                
+                // 根据不同情况生成推荐
+                if (升学目标 === "专升本" && interestedFields.length > 0) {
+                    // 为专升本目标生成推荐
+                    for (const field of interestedFields) {
+                        if (institutions[field]) {
+                            aiRecommendations.push(`针对您的${field}专业兴趣，推荐报考以下院校：`);
+                            institutions[field].slice(0, 2).forEach(inst => {
+                                aiRecommendations.push(`  • ${inst}`);
+                            });
+                        }
+                    }
+                    
+                    aiRecommendations.push("专升本考试需要重点复习英语和专业课，建议参加一些辅导班或在线课程提高通过率。");
+                } else if (升学目标 === "职业本科" && interestedFields.length > 0) {
+                    // 为职业本科目标生成推荐
+                    for (const field of interestedFields) {
+                        if (institutions[field]) {
+                            aiRecommendations.push(`针对您的${field}专业兴趣，推荐报考以下职业本科院校：`);
+                            institutions[field].slice(0, 2).forEach(inst => {
+                                aiRecommendations.push(`  • ${inst}`);
+                            });
+                        }
+                    }
+                    
+                    aiRecommendations.push("职业本科教育注重实践能力培养，建议在学习期间积极参与实习和项目实践，提升专业技能。");
+                } else if (升学目标 === "直接就业" && interestedFields.length > 0) {
+                    // 为直接就业目标生成推荐
+                    for (const field of interestedFields) {
+                        if (companies[field]) {
+                            aiRecommendations.push(`针对您的${field}专业背景，推荐关注以下企业：`);
+                            companies[field].slice(0, 3).forEach(company => {
+                                aiRecommendations.push(`  • ${company}`);
+                            });
+                        }
+                    }
+                    
+                    aiRecommendations.push("建议考取相关的职业技能证书以增强就业竞争力，并积极参与校园招聘会和企业宣讲会。");
+                } else {
+                    // 默认推荐
+                    aiRecommendations.push("根据您的专业兴趣，以下是一些推荐的院校和企业：");
+                    
+                    // 为每个感兴趣的领域提供院校和企业推荐
+                    for (const field of interestedFields) {
+                        if (institutions[field]) {
+                            aiRecommendations.push(`${field}专业推荐院校：`);
+                            institutions[field].slice(0, 1).forEach(inst => {
+                                aiRecommendations.push(`  • ${inst}`);
+                            });
+                        }
+                        
+                        if (companies[field]) {
+                            aiRecommendations.push(`${field}专业推荐企业：`);
+                            companies[field].slice(0, 2).forEach(company => {
+                                aiRecommendations.push(`  • ${company}`);
+                            });
+                        }
+                    }
+                    
+                    if (interestedFields.length === 0) {
+                        // 如果没有识别出具体领域，提供通用推荐
+                        aiRecommendations.push("推荐院校：");
+                        aiRecommendations.push("  • XX职业技术学院");
+                        aiRecommendations.push("  • YY科技职业学院");
+                        
+                        aiRecommendations.push("推荐企业：");
+                        aiRecommendations.push("  • 华为技术有限公司");
+                        aiRecommendations.push("  • 腾讯科技有限公司");
+                    }
+                }
+                
+                // 生成最终的升学或工作路径
+                let finalPath = "";
+                if (升学目标 === "专升本" && interestedFields.length > 0) {
+                    finalPath = `${educationStage} → 专升本考试 → 本科院校${interestedFields[0]}专业 → 获得学士学位 → 相关行业就业`;
+                } else if (升学目标 === "职业本科" && interestedFields.length > 0) {
+                    finalPath = `${educationStage} → 职业本科院校${interestedFields[0]}专业 → 获得学士学位 → 相关行业就业`;
+                } else if (升学目标 === "直接就业" && interestedFields.length > 0) {
+                    finalPath = `${educationStage} → 完成当前学业 → 考取相关职业技能证书 → 相关行业就业`;
+                } else {
+                    finalPath = "完成当前学业阶段 → 根据兴趣选择升学或就业方向 → 实现个人职业发展目标";
+                }
+                
+                // 生成下一步行动
+                let nextSteps = [];
+                
+                if (升学目标 === "专升本") {
+                    nextSteps = [
+                        "深入了解专升本政策和考试科目要求",
+                        "联系目标院校获取招生简章和报名信息",
+                        "制定复习计划，准备专升本考试"
+                    ];
+                } else if (升学目标 === "职业本科") {
+                    nextSteps = [
+                        "了解职业本科院校的招生政策和专业设置",
+                        "联系目标院校获取招生简章和报名信息",
+                        "准备相关材料，按时提交申请"
+                    ];
+                } else if (升学目标 === "直接就业") {
+                    nextSteps = [
+                        "深入了解感兴趣行业的发展趋势和就业前景",
+                        "考取相关的职业技能证书",
+                        "积极参与实习和校园招聘会"
+                    ];
+                } else {
+                    nextSteps = [
+                        "深入了解感兴趣的专业课程设置和就业方向",
+                        "联系目标院校获取招生简章和报名信息",
+                        "制定学习计划，准备相关考试和技能认证"
+                    ];
+                }
+                
+                // 在推荐中添加最终路径
+                aiRecommendations.push(`<strong>推荐的最终路径：</strong> ${finalPath}`);
+                
+                // 填充内容
+                document.getElementById('ai-summary-text').textContent = aiSummary;
+                
+                const recommendationsContainer = document.getElementById('ai-recommendations');
+                recommendationsContainer.innerHTML = '';
+                aiRecommendations.forEach(rec => {
+                    const p = document.createElement('p');
+                    // 如果是包含HTML标签的推荐（如加粗文本），使用innerHTML
+                    if (rec.includes("<strong>")) {
+                        p.innerHTML = rec;
+                    } else {
+                        p.textContent = rec;
+                    }
+                    p.style.marginBottom = '10px';
+                    recommendationsContainer.appendChild(p);
+                });
+                
+                const nextStepsContainer = document.getElementById('ai-next-steps');
+                nextStepsContainer.innerHTML = '';
+                nextSteps.forEach(step => {
+                    const li = document.createElement('li');
+                    li.textContent = step;
+                    li.style.marginBottom = '8px';
+                    nextStepsContainer.appendChild(li);
+                });
+                
+                // 显示内容并隐藏加载状态
+                document.getElementById('ai-recommendation-loading').style.display = 'none';
+                document.getElementById('ai-recommendation-content').style.display = 'block';
+            } catch (error) {
+                console.error('生成AI总结和推荐时出错:', error);
+                document.getElementById('ai-recommendation-loading').innerHTML = 
+                    '<p><i class="fas fa-exclamation-circle"></i> 生成推荐时出现错误，请稍后重试。</p>';
+            }
+        }
+
+        // 填充报告数据
+        function populateReport() {
+            const params = getQueryParams();
+            
+            document.getElementById('report-title').textContent = params.reportTitle;
+            document.getElementById('student-name').textContent = params.studentName;
+            document.getElementById('consultation-date').textContent = params.date;
+            document.getElementById('consultation-type').textContent = params.consultationType;
+            document.getElementById('summary').textContent = params.summary;
+            document.getElementById('generated-date').textContent = params.generatedDate;
+            document.getElementById('footer-generated-date').textContent = params.generatedDate;
+            
+            // 解析并显示对话详情
+            if (params.details) {
+                const detailsContainer = document.getElementById('details');
+                
+                // 为了安全起见，应该使用DOMPurify或其他库来防止XSS攻击
+                // 这里提供一个简单的处理方式
+                try {
+                    // 创建一个临时div来处理HTML内容
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = params.details;
+                    
+                    // 清理潜在的危险元素（简单处理）
+                    const dangerousElements = tempDiv.querySelectorAll('script, iframe, object, embed');
+                    dangerousElements.forEach(el => el.remove());
+                    
+                    detailsContainer.innerHTML = tempDiv.innerHTML;
+                } catch (e) {
+                    // 如果处理失败，以纯文本形式显示
+                    detailsContainer.textContent = params.details;
+                }
+                
+                // 生成AI总结和推荐
+                generateAISummaryAndRecommendations(params.details);
+            }
+        }
+
+        // 打印功能
+        document.getElementById('print-btn').addEventListener('click', function() {
+            window.print();
+        });
+
+        // 导出功能（简化版）
+        document.getElementById('export-btn').addEventListener('click', function() {
+            alert('导出功能已触发，实际应用中将生成PDF文件。');
+        });
+
+        // 页面加载完成后填充数据
+        document.addEventListener('DOMContentLoaded', populateReport);
+    </script>
+</body>
+</html>
