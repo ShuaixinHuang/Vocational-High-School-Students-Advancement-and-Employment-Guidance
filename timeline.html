@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>重要时间节点 - 一对一职业教育升学智能顾问</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 添加中文字体预加载 -->
+    <style>
+        @font-face {
+            font-family: 'SimHei';
+            src: url('https://fonts.cdnfonts.com/s/14824/simhei.woff') format('woff');
+        }
+        
+        @font-face {
+            font-family: 'Microsoft YaHei';
+            src: url('https://fonts.cdnfonts.com/s/8486/ygyxsziti.woff') format('woff');
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36D399',
+                        accent: '#FF9F1C',
+                        dark: '#1E293B',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-dark min-h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="bg-primary text-white p-2 rounded-lg">
+                    <img src="1111.png" alt="图标" class="h-12 w-12"> <!-- 放大图片 -->
+                </div>
+                <h1 class="text-xl md:text-2xl font-bold text-primary">一对一职业教育升学智能顾问</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i class="fa fa-moon-o text-gray-600"></i>
+                </button>
+                <button id="settings-btn" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i class="fa fa-cog text-gray-600"></i>
+                </button>
+                <button id="model-status" class="p-2 rounded-full bg-green-100 text-green-600 transition-colors">
+                    <i class="fa fa-link"></i>
+                </button>
+                <button id="generate-report" class="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                    <i class="fa fa-file-pdf-o"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="flex-grow container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
+        <!-- 左侧导航面板 -->
+        <aside class="w-64 space-y-6">
+            <div class="bg-white rounded-xl shadow-sm p-5">
+                <h2 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fa fa-list-ul text-primary mr-2"></i>
+                    咨询类别
+                </h2>
+                <ul class="space-y-2">
+                    <li><a href="study-path.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fa fa-graduation-cap text-primary mr-2"></i>
+                        升学途径
+                    </a></li>
+                    <li><a href="college-selection.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fa fa-building text-primary mr-2"></i>
+                        院校选择
+                    </a></li>
+                    <li><a href="major-introduction.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fa fa-book text-primary mr-2"></i>
+                        专业介绍
+                    </a></li>
+                    <li><a href="certificate-exam.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fa fa-certificate text-primary mr-2"></i>
+                        证书考试
+                    </a></li>
+                    <li><a href="employment-prospects.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fa fa-briefcase text-primary mr-2"></i>
+                        就业前景
+                    </a></li>
+                    <li><a href="enrollment-data.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fa fa-bar-chart text-primary mr-2"></i>
+                        升学数据
+                    </a></li>
+                    <li><a href="timeline.html" class="flex items-center p-2 rounded-lg bg-gray-100 transition-colors">
+                        <i class="fa fa-calendar text-primary mr-2"></i>
+                        重要时间节点
+                    </a></li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-5">
+                <h2 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fa fa-info-circle text-primary mr-2"></i>
+                    <a href="enrollment-data.html" class="hover:text-primary transition-colors">升学数据</a>
+                </h2>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>职业教育升学率</span>
+                            <span class="font-semibold">68.5%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 68.5%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>热门专业就业率</span>
+                            <span class="font-semibold">89.2%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-secondary h-2 rounded-full" style="width: 89.2%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>技能证书认可度</span>
+                            <span class="font-semibold">92.3%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-accent h-2 rounded-full" style="width: 92.3%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <a href="enrollment-data.html" class="text-primary hover:text-primary/80 text-sm font-medium flex items-center justify-center">
+                        查看详细数据 <i class="fa fa-arrow-right ml-1 text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 中间内容区域 -->
+        <section class="flex-grow">
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold mb-2 flex items-center">
+                        <i class="fa fa-calendar text-primary mr-2"></i>
+                        重要时间节点
+                    </h2>
+                    <p class="text-gray-600">以下是职业教育升学相关的重要时间节点，帮助您合理规划升学路径。</p>
+                </div>
+                
+                <!-- 年度时间节点 -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">年度时间节点</h3>
+                    <div class="space-y-6">
+                        <div class="border-l-4 border-primary pl-4 py-1">
+                            <div class="flex items-center mb-2">
+                                <span class="bg-primary text-white text-sm font-semibold px-2 py-1 rounded mr-2">2025年</span>
+                                <h4 class="font-semibold text-lg">全年升学规划</h4>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h5 class="font-medium text-primary mb-2">上半年</h5>
+                                    <ul class="space-y-2 text-sm">
+                                        <li class="flex">
+                                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">1月</div>
+                                            <div>
+                                                <p class="font-medium">寒假期间：制定升学计划</p>
+                                                <p class="text-gray-500">根据个人情况制定详细的升学规划</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex">
+                                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">3月</div>
+                                            <div>
+                                                <p class="font-medium">技能证书考试报名</p>
+                                                <p class="text-gray-500">关注各类职业技能证书考试报名时间</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex">
+                                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">5月</div>
+                                            <div>
+                                                <p class="font-medium">技能大赛</p>
+                                                <p class="text-gray-500">参加各类职业技能竞赛</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex">
+                                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">6月</div>
+                                            <div>
+                                                <p class="font-medium">职业技能考试</p>
+                                                <p class="text-gray-500">6月15日-20日</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h5 class="font-medium text-primary mb-2">下半年</h5>
+                                    <ul class="space-y-2 text-sm">
+                                        <li class="flex">
+                                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">7月</div>
+                                            <div>
+                                                <p class="font-medium">专升本报名</p>
+                                                <p class="text-gray-500">7月1日-15日</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex">
+                                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">8月</div>
+                                            <div>
+                                                <p class="font-medium">升学考试</p>
+                                                <p class="text-gray-500">8月20日-25日</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex">
+                                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">9月</div>
+                                            <div>
+                                                <p class="font-medium">录取结果公布</p>
+                                                <p class="text-gray-500">9月10日起</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex">
+                                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">10月</div>
+                                            <div>
+                                                <p class="font-medium">新生入学</p>
+                                                <p class="text-gray-500">各院校新生报到时间</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-secondary pl-4 py-1">
+                            <div class="flex items-center mb-2">
+                                <span class="bg-secondary text-white text-sm font-semibold px-2 py-1 rounded mr-2">2026年</span>
+                                <h4 class="font-semibold text-lg">升学关键时期</h4>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <ul class="space-y-2 text-sm">
+                                        <li class="flex">
+                                            <div class="bg-secondary/10 text-secondary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">3月</div>
+                                            <div>
+                                                <p class="font-medium">春季招生</p>
+                                                <p class="text-gray-500">部分院校春季招生报名</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex">
+                                            <div class="bg-secondary/10 text-secondary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">6月</div>
+                                            <div>
+                                                <p class="font-medium">高考/职教高考</p>
+                                                <p class="text-gray-500">针对中职毕业生的升学考试</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <ul class="space-y-2 text-sm">
+                                        <li class="flex">
+                                            <div class="bg-secondary/10 text-secondary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">9月</div>
+                                            <div>
+                                                <p class="font-medium">秋季入学</p>
+                                                <p class="text-gray-500">高等院校秋季学期开学</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex">
+                                            <div class="bg-secondary/10 text-secondary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">12月</div>
+                                            <div>
+                                                <p class="font-medium">技能证书考试</p>
+                                                <p class="text-gray-500">下半年技能证书考试安排</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 月度时间节点 -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">月度时间节点</h3>
+                    <div class="space-y-6">
+                        <!-- 6月 -->
+                        <div class="border-l-4 border-accent pl-4 py-1">
+                            <div class="flex items-center mb-2">
+                                <span class="bg-accent text-white text-sm font-semibold px-2 py-1 rounded mr-2">6月</span>
+                                <h4 class="font-semibold text-lg">考试季</h4>
+                            </div>
+                            <ul class="space-y-3 mt-3">
+                                <li class="flex items-start">
+                                    <div class="bg-accent/10 text-accent text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">6月1日-10日</div>
+                                    <div>
+                                        <p class="font-medium">考试准备期</p>
+                                        <p class="text-gray-500">复习冲刺，调整心态</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="bg-accent/10 text-accent text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">6月15日-20日</div>
+                                    <div>
+                                        <p class="font-medium">职业技能考试</p>
+                                        <p class="text-gray-500">相关专业技能操作考试</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="bg-accent/10 text-accent text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">6月25日-30日</div>
+                                    <div>
+                                        <p class="font-medium">成绩查询</p>
+                                        <p class="text-gray-500">查询技能考试成绩</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 7月 -->
+                        <div class="border-l-4 border-primary pl-4 py-1">
+                            <div class="flex items-center mb-2">
+                                <span class="bg-primary text-white text-sm font-semibold px-2 py-1 rounded mr-2">7月</span>
+                                <h4 class="font-semibold text-lg">报名季</h4>
+                            </div>
+                            <ul class="space-y-3 mt-3">
+                                <li class="flex items-start">
+                                    <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">7月1日-15日</div>
+                                    <div>
+                                        <p class="font-medium">专升本报名</p>
+                                        <p class="text-gray-500">网上报名及资格审核</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">7月16日-31日</div>
+                                    <div>
+                                        <p class="font-medium">材料准备</p>
+                                        <p class="text-gray-500">准备相关证明材料</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 8月 -->
+                        <div class="border-l-4 border-secondary pl-4 py-1">
+                            <div class="flex items-center mb-2">
+                                <span class="bg-secondary text-white text-sm font-semibold px-2 py-1 rounded mr-2">8月</span>
+                                <h4 class="font-semibold text-lg">考试与录取</h4>
+                            </div>
+                            <ul class="space-y-3 mt-3">
+                                <li class="flex items-start">
+                                    <div class="bg-secondary/10 text-secondary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">8月1日-19日</div>
+                                    <div>
+                                        <p class="font-medium">考前准备</p>
+                                        <p class="text-gray-500">确认考试安排，准备考试用品</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="bg-secondary/10 text-secondary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">8月20日-25日</div>
+                                    <div>
+                                        <p class="font-medium">升学考试</p>
+                                        <p class="text-gray-500">专升本文化课考试</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="bg-secondary/10 text-secondary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">8月30日前</div>
+                                    <div>
+                                        <p class="font-medium">成绩公布</p>
+                                        <p class="text-gray-500">查询考试成绩</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 9月 -->
+                        <div class="border-l-4 border-accent pl-4 py-1">
+                            <div class="flex items-center mb-2">
+                                <span class="bg-accent text-white text-sm font-semibold px-2 py-1 rounded mr-2">9月</span>
+                                <h4 class="font-semibold text-lg">录取与入学</h4>
+                            </div>
+                            <ul class="space-y-3 mt-3">
+                                <li class="flex items-start">
+                                    <div class="bg-accent/10 text-accent text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">9月1日-9日</div>
+                                    <div>
+                                        <p class="font-medium">录取结果查询</p>
+                                        <p class="text-gray-500">关注录取结果公布</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="bg-accent/10 text-accent text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">9月10日起</div>
+                                    <div>
+                                        <p class="font-medium">录取结果公布</p>
+                                        <p class="text-gray-500">正式公布录取名单</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="bg-accent/10 text-accent text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">9月15日-30日</div>
+                                    <div>
+                                        <p class="font-medium">新生报到</p>
+                                        <p class="text-gray-500">办理入学手续</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 py-6 mt-8">
+        <div class="container mx-auto px-4">
+            <div class="text-center text-sm text-gray-500">
+                <p>© 2025 一对一职业教育升学智能顾问. 保留所有权利.</p>
+                <p class="mt-1">专注于为职业教育学生提供专业的升学指导服务</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const themeToggle = document.getElementById('theme-toggle');
+            const navbar = document.getElementById('navbar');
+            
+            // 主题切换功能
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark');
+                const icon = this.querySelector('i');
+                if (document.body.classList.contains('dark')) {
+                    icon.classList.remove('fa-moon-o');
+                    icon.classList.add('fa-sun-o');
+                    navbar.classList.add('bg-gray-800');
+                } else {
+                    icon.classList.remove('fa-sun-o');
+                    icon.classList.add('fa-moon-o');
+                    navbar.classList.remove('bg-gray-800');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
