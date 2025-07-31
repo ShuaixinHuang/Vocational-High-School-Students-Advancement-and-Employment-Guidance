@@ -221,27 +221,72 @@
                     咨询类别
                 </h2>
                 <ul class="space-y-2">
-                    <li><a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                    <li><a href="study-path.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
                         <i class="fa fa-graduation-cap text-primary mr-2"></i>
                         升学途径
                     </a></li>
-                    <li><a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                    <li><a href="college-selection.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
                         <i class="fa fa-building text-primary mr-2"></i>
                         院校选择
                     </a></li>
-                    <li><a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                    <li><a href="major-introduction.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
                         <i class="fa fa-book text-primary mr-2"></i>
                         专业介绍
                     </a></li>
-                    <li><a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                    <li><a href="certificate-exam.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
                         <i class="fa fa-certificate text-primary mr-2"></i>
                         证书考试
                     </a></li>
-                    <li><a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                    <li><a href="employment-prospects.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
                         <i class="fa fa-briefcase text-primary mr-2"></i>
                         就业前景
                     </a></li>
+                    <li><a href="enrollment-data.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fa fa-bar-chart text-primary mr-2"></i>
+                        升学数据
+                    </a></li>
                 </ul>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-5">
+                <h2 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fa fa-info-circle text-primary mr-2"></i>
+                    <a href="enrollment-data.html" class="hover:text-primary transition-colors">升学数据</a>
+                </h2>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>职业教育升学率</span>
+                            <span class="font-semibold">68.5%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 68.5%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>热门专业就业率</span>
+                            <span class="font-semibold">89.2%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-secondary h-2 rounded-full" style="width: 89.2%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>技能证书认可度</span>
+                            <span class="font-semibold">92.3%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-accent h-2 rounded-full" style="width: 92.3%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <a href="enrollment-data.html" class="text-primary hover:text-primary/80 text-sm font-medium flex items-center justify-center">
+                        查看详细数据 <i class="fa fa-arrow-right ml-1 text-xs"></i>
+                    </a>
+                </div>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm p-5">
@@ -297,42 +342,6 @@
 
         <!-- 右侧信息面板 -->
         <aside class="hidden lg:block w-80 space-y-6">
-            <div class="bg-white rounded-xl shadow-sm p-5">
-                <h2 class="text-lg font-semibold mb-4 flex items-center">
-                    <i class="fa fa-info-circle text-primary mr-2"></i>
-                    升学数据
-                </h2>
-                <div class="space-y-4">
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>职业教育升学率</span>
-                            <span class="font-semibold">68.5%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-primary h-2 rounded-full" style="width: 68.5%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>热门专业就业率</span>
-                            <span class="font-semibold">89.2%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-secondary h-2 rounded-full" style="width: 89.2%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>技能证书认可度</span>
-                            <span class="font-semibold">92.3%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-accent h-2 rounded-full" style="width: 92.3%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="bg-white rounded-xl shadow-sm p-5">
                 <h2 class="text-lg font-semibold mb-4 flex items-center">
                     <i class="fa fa-calendar text-primary mr-2"></i>
@@ -472,6 +481,11 @@
             // 存储对话历史
             let conversationHistory = [];
             
+            // 信息收集表单相关元素
+            const infoCollectionModal = document.getElementById('info-collection-modal');
+            const studentInfoForm = document.getElementById('student-info-form');
+            const cancelInfoBtn = document.getElementById('cancel-info');
+            
             // 隐私协议相关事件
             viewPrivacyBtn.addEventListener('click', function() {
                 welcomeModal.classList.add('hidden');
@@ -483,23 +497,194 @@
                 welcomeModal.classList.remove('hidden');
             });
             
+            // 显示信息收集表单
+            function showInfoCollectionForm() {
+                infoCollectionModal.classList.remove('hidden');
+            }
+            
+            // 隐藏信息收集表单
+            function hideInfoCollectionForm() {
+                infoCollectionModal.classList.add('hidden');
+            }
+            
+            // 从localStorage恢复表单数据
+            function restoreFormData() {
+                // 恢复原有数据
+                const studentName = localStorage.getItem('studentName');
+                const educationLevel = localStorage.getItem('educationLevel');
+                const interestMajor = localStorage.getItem('interestMajor');
+                const 升学目标 = localStorage.getItem('升学目标');
+                
+                // 恢复新增的基础身份信息
+                const gender = localStorage.getItem('gender');
+                const birthDate = localStorage.getItem('birthDate');
+                const idNumber = localStorage.getItem('idNumber');
+                const studentId = localStorage.getItem('studentId');
+                const householdLocation = localStorage.getItem('householdLocation');
+                const contactInfo = localStorage.getItem('contactInfo');
+                
+                // 恢复新增的中考成绩与排名信息
+                const subjectScores = localStorage.getItem('subjectScores');
+                const totalScore = localStorage.getItem('totalScore');
+                const gradeLevel = localStorage.getItem('gradeLevel');
+                const ranking = localStorage.getItem('ranking');
+                const controlLine = localStorage.getItem('controlLine');
+                
+                // 恢复新增的学业能力证明信息
+                const academicTranscript = localStorage.getItem('academicTranscript');
+                const skillGrades = localStorage.getItem('skillGrades');
+                const certificates = localStorage.getItem('certificates');
+                
+                // 恢复新增的家庭基础条件信息
+                const familyIncome = localStorage.getItem('familyIncome');
+                const lowIncome = localStorage.getItem('lowIncome');
+                const tuitionCapacity = localStorage.getItem('tuitionCapacity');
+                
+                // 如果有存储的数据，则填充表单
+                if (studentName) document.getElementById('student-name').value = studentName;
+                if (educationLevel) document.getElementById('education-level').value = educationLevel;
+                if (interestMajor) document.getElementById('interest-major').value = interestMajor;
+                if (升学目标) document.getElementById('升学目标').value = 升学目标;
+                
+                if (gender) document.getElementById('gender').value = gender;
+                if (birthDate) document.getElementById('birth-date').value = birthDate;
+                if (idNumber) document.getElementById('id-number').value = idNumber;
+                if (studentId) document.getElementById('student-id').value = studentId;
+                if (householdLocation) document.getElementById('household-location').value = householdLocation;
+                if (contactInfo) document.getElementById('contact-info').value = contactInfo;
+                
+                if (subjectScores) document.getElementById('subject-scores').value = subjectScores;
+                if (totalScore) document.getElementById('total-score').value = totalScore;
+                if (gradeLevel) document.getElementById('grade-level').value = gradeLevel;
+                if (ranking) document.getElementById('ranking').value = ranking;
+                if (controlLine) document.getElementById('control-line').value = controlLine;
+                
+                if (academicTranscript) document.getElementById('academic-transcript').value = academicTranscript;
+                if (skillGrades) document.getElementById('skill-grades').value = skillGrades;
+                if (certificates) document.getElementById('certificates').value = certificates;
+                
+                if (familyIncome) document.getElementById('family-income').value = familyIncome;
+                if (lowIncome) document.getElementById('low-income').value = lowIncome;
+                if (tuitionCapacity) document.getElementById('tuition-capacity').value = tuitionCapacity;
+            }
+            
+            // 在用户同意隐私协议后显示信息收集表单
             function acceptPrivacy() {
-                welcomeModal.classList.add('hidden');
+                // 检查是否已经接受过隐私协议
+                if (welcomeModal.classList.contains('hidden') && privacyModal.classList.contains('hidden')) {
+                    return; // 如果已经接受过，直接返回
+                }
+                
+                // 隐藏隐私协议模态框
                 privacyModal.classList.add('hidden');
+                
+                // 隐藏初始问候弹窗
+                welcomeModal.classList.add('hidden');
+                
+                // 显示信息收集表单
+                showInfoCollectionForm();
+                
+                // 恢复表单数据
+                restoreFormData();
                 
                 // 启用聊天输入
                 userInput.disabled = false;
-                const submitBtn = chatForm.querySelector('button[type="submit"]');
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
-                submitBtn.classList.add('bg-primary', 'text-white', 'hover:bg-primary/90');
-                voiceInputBtn.disabled = false;
-                voiceInputBtn.querySelector('i').classList.remove('text-gray-400');
-                voiceInputBtn.querySelector('i').classList.add('text-gray-500');
+                chatForm.querySelector('button').disabled = false;
+                chatForm.querySelector('button').classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                chatForm.querySelector('button').classList.add('bg-primary', 'text-white');
                 
-                // 显示欢迎消息
-                addWelcomeMessage();
+                // 只有在还没有欢迎消息时才添加
+                const welcomeMessage = document.querySelector('.welcome-message');
+                if (!welcomeMessage) {
+                    addWelcomeMessage();
+                }
             }
+            
+            // 取消填写信息
+            cancelInfoBtn.addEventListener('click', function() {
+                if (confirm('您确定要取消填写吗？填写信息有助于我们为您提供更个性化的咨询服务。')) {
+                    hideInfoCollectionForm();
+                }
+            });
+            
+            // 处理表单提交
+            studentInfoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 获取原有表单数据
+                const studentName = document.getElementById('student-name').value;
+                const educationLevel = document.getElementById('education-level').value;
+                const interestMajor = document.getElementById('interest-major').value;
+                const 升学目标 = document.getElementById('升学目标').value;
+                
+                // 获取新增的基础身份信息
+                const gender = document.getElementById('gender').value;
+                const birthDate = document.getElementById('birth-date').value;
+                const idNumber = document.getElementById('id-number').value;
+                const studentId = document.getElementById('student-id').value;
+                const householdLocation = document.getElementById('household-location').value;
+                const contactInfo = document.getElementById('contact-info').value;
+                
+                // 获取新增的中考成绩与排名信息
+                const subjectScores = document.getElementById('subject-scores').value;
+                const totalScore = document.getElementById('total-score').value;
+                const gradeLevel = document.getElementById('grade-level').value;
+                const ranking = document.getElementById('ranking').value;
+                const controlLine = document.getElementById('control-line').value;
+                
+                // 获取新增的学业能力证明信息
+                const academicTranscript = document.getElementById('academic-transcript').value;
+                const skillGrades = document.getElementById('skill-grades').value;
+                const certificates = document.getElementById('certificates').value;
+                
+                // 获取新增的家庭基础条件信息
+                const familyIncome = document.getElementById('family-income').value;
+                const lowIncome = document.getElementById('low-income').value;
+                const tuitionCapacity = document.getElementById('tuition-capacity').value;
+                
+                // 存储原有数据到本地存储
+                localStorage.setItem('studentName', studentName);
+                localStorage.setItem('educationLevel', educationLevel);
+                localStorage.setItem('interestMajor', interestMajor);
+                localStorage.setItem('升学目标', 升学目标);
+                
+                // 存储新增的基础身份信息到本地存储
+                localStorage.setItem('gender', gender);
+                localStorage.setItem('birthDate', birthDate);
+                localStorage.setItem('idNumber', idNumber);
+                localStorage.setItem('studentId', studentId);
+                localStorage.setItem('householdLocation', householdLocation);
+                localStorage.setItem('contactInfo', contactInfo);
+                
+                // 存储新增的中考成绩与排名信息到本地存储
+                localStorage.setItem('subjectScores', subjectScores);
+                localStorage.setItem('totalScore', totalScore);
+                localStorage.setItem('gradeLevel', gradeLevel);
+                localStorage.setItem('ranking', ranking);
+                localStorage.setItem('controlLine', controlLine);
+                
+                // 存储新增的学业能力证明信息到本地存储
+                localStorage.setItem('academicTranscript', academicTranscript);
+                localStorage.setItem('skillGrades', skillGrades);
+                localStorage.setItem('certificates', certificates);
+                
+                // 存储新增的家庭基础条件信息到本地存储
+                localStorage.setItem('familyIncome', familyIncome);
+                localStorage.setItem('lowIncome', lowIncome);
+                localStorage.setItem('tuitionCapacity', tuitionCapacity);
+                
+                // 隐藏信息收集表单
+                hideInfoCollectionForm();
+                
+                // 确保隐私协议模态框也被隐藏
+                privacyModal.classList.add('hidden');
+                
+                // 显示欢迎消息（如果还没有显示）
+                const welcomeMessage = document.querySelector('.welcome-message');
+                if (!welcomeMessage) {
+                    addWelcomeMessage();
+                }
+            });
             
             acceptPrivacyBtn.addEventListener('click', acceptPrivacy);
             acceptPrivacyFromDetailsBtn.addEventListener('click', acceptPrivacy);
@@ -536,17 +721,21 @@
             
             // 添加欢迎消息
             function addWelcomeMessage() {
+                // 检查是否已经存在欢迎消息
+                const welcomeMessage = document.querySelector('.welcome-message');
+                if (welcomeMessage) {
+                    return; // 如果已经存在，直接返回
+                }
+                
                 const welcomeDiv = document.createElement('div');
-                welcomeDiv.className = 'flex items-start space-x-3';
+                welcomeDiv.className = 'flex items-start space-x-3 welcome-message'; // 添加welcome-message类名
                 welcomeDiv.innerHTML = `
                     <div class="bg-primary text-white p-2 rounded-full">
                         <i class="fa fa-robot"></i>
                     </div>
                     <div class="bg-gray-50 rounded-xl p-4 max-w-[80%]">
                         <p class="text-gray-800">感谢您的信任！为了更好地为您提供职业教育升学建议，您可以告诉我：<br>
-                        1. 您目前的教育阶段（如中职、高职等）<br>
-                        2. 您感兴趣的专业领域<br>
-                        3. 您的升学目标（如专升本、职业本科等）<br>
+                        您感兴趣的专业领域<br>
                         我会根据您的情况提供个性化建议。</p>
                     </div>
                 `;
@@ -557,7 +746,7 @@
                 // 保存到对话历史
                 conversationHistory.push({
                     role: 'assistant',
-                    content: '感谢您的信任！为了更好地为您提供职业教育升学建议，您可以告诉我：1. 您目前的教育阶段（如中职、高职等）2. 您感兴趣的专业领域3. 您的升学目标（如专升本、职业本科等）我会根据您的情况提供个性化建议。'
+                    content: '感谢您的信任！为了更好地为您提供职业教育升学建议，您可以告诉我： 您感兴趣的领域，来作为您咨询问题的依据。'
                 });
             }
             
@@ -637,70 +826,99 @@
             // 添加询问计数器
             let userQuestionCount = 0;
             
-            // 调用DeepSeek API获取回复
-            async function getAIResponse(userMessage) {
-                try {
-                    // 显示"正在思考"动画
-                    addTypingIndicator();
-                    
-                    // 根据询问次数设置不同的系统提示
-                    let systemPrompt = "你是一个专注于职业教育升学咨询的智能助手。";
-                    
-                    if (userQuestionCount < 5) {
-                        systemPrompt += "在前五次交互中，请简要概括用户特点，并主动引导用户提供以下升学相关信息：目前的教育阶段（如初中、高中、中职等）、感兴趣的专业领域（如计算机、机械、护理等）、升学目标（如想升入高职、本科或有其他具体目标）。请保持回答简洁，并在结尾提供1-2个具体的升学相关问题示例来引导用户继续提问，例如：'您目前在哪个教育阶段学习？'或'您对哪些专业领域感兴趣？";
-                    } else {
-                        systemPrompt += "请以清晰准确完备有条理的方式回答用户的问题，提供相关的政策信息、升学途径、院校选择建议、专业介绍等内容。请确保回答内容准确、实用，并根据用户的具体问题提供个性化建议。如果用户询问具体的专业或院校信息，请提供详细且结构化的回答，包括专业特点、就业前景、推荐院校等。如果用户询问升学考试相关信息，请提供考试科目、考试时间、考试地点等。如果用户询问其他问题，请提供相关的专业知识或升学建议。如果用户询问其他问题，请提供相关的专业知识或升学建议。";
-                    }
-                    
-                    // 准备API请求数据
-                    const messages = [
-                        {
-                            role: "system",
-                            content: systemPrompt
-                        },
-                        ...conversationHistory,
-                        {
-                            role: "user",
-                            content: userMessage
-                        }
-                    ];
-                    
-                    // 构建API请求
-                    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Bearer sk-37ae9c5a66764abca05c91e142157daa'
-                        },
-                        body: JSON.stringify({
-                            model: 'deepseek-chat',
-                            messages: messages,
-                            temperature: 0.7,
-                            max_tokens: 1000
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`API请求失败: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    const aiResponse = data.choices[0].message.content;
-                    
-                    // 移除"正在思考"动画
-                    removeTypingIndicator();
-                    
-                    return aiResponse;
-                } catch (error) {
-                    console.error('获取AI回复时出错:', error);
-                    
-                    // 移除"正在思考"动画
-                    removeTypingIndicator();
-                    
-                    // 返回错误消息
-                    return "很抱歉，获取回复时发生错误。请稍后再试。";
-                }
+// 调用DeepSeek API获取回复
+async function getAIResponse(userMessage) {
+    try {
+        // 显示"正在思考"动画
+        addTypingIndicator();
+        
+        // 根据询问次数设置不同的系统提示
+        let systemPrompt = "你是一个专注于职业教育升学咨询的智能助手。";
+        
+        if (userQuestionCount < 5) {
+            systemPrompt += "在前五次交互中，请主动引导用户提供以下升学相关信息，以了解他们的主观认知和深层需求："+
+            "1. 兴趣与职业倾向：通过具体场景引导，如'帮表弟补习时是否享受教学过程？'（教育类职业适配度）、'组织家庭聚餐是否喜欢策划流程？'（酒店管理/会展策划潜力）、'是否排斥重复操作类工作？'（避开机械维修等专业）"+
+            "2. 学习动机与抗压能力：分析成绩波动原因，如'物理成绩下滑是因兴趣不足还是方法不当？'；了解抗压表现，如'考试失利后如何调整？更倾向独自消化或求助？'（判断是否适合升学压力大的'职教高考班'）"+
+            "3. 家庭支持度与隐性压力：探讨父母期望冲突，如'家人希望学会计，但你更喜欢设计，如何权衡？'；了解经济顾虑，如'若选中外合作班但学费较高，家庭是否需要借贷？'"+
+            "4. 价值观排序：了解优先级选择，如'更看重未来薪资，还是工作稳定性？'；探讨地域偏好，如'能否接受异地就读？对通勤时长容忍度？'"+
+            "5. 规则认知盲区：验证政策理解，如'你知道艺术类志愿7月17日10点就截止吗？'；纠偏误区，如'是否认为特长生免填志愿？'（强调必须系统填报）"+
+            "请保持回答简洁，并在结尾提供1-2个具体问题示例来引导用户继续提问。";
+        } else {
+            systemPrompt += "请以清晰准确完备有条理的方式回答用户的问题，提供相关的政策信息、升学途径、院校选择建议、专业介绍等内容。请确保回答内容准确、实用，并根据用户的具体问题提供个性化建议。"+
+            "在对话中，请继续深入探讨以下主题，以全面了解用户的主观认知和深层需求："+
+            "1. 兴趣与职业倾向：通过具体场景引导，了解用户的职业适配度"+
+            "2. 学习动机与抗压能力：分析用户的学习动机和抗压表现"+
+            "3. 家庭支持度与隐性压力：了解用户家庭的支持度和隐性压力"+
+            "4. 价值观排序：了解用户的价值观优先级和地域偏好"+
+            "5. 规则认知盲区：验证用户对政策的理解，纠偏误区"+
+            "请根据对话历史和已收集的信息，提供个性化的建议和指导。";
+        }
+        
+        // 添加学生基本信息到系统提示
+        const studentInfo = {
+            studentName: localStorage.getItem('studentName'),
+            educationLevel: localStorage.getItem('educationLevel'),
+            interestMajor: localStorage.getItem('interestMajor'),
+            升学目标: localStorage.getItem('升学目标')
+        };
+        
+        if (studentInfo.studentName || studentInfo.educationLevel || studentInfo.interestMajor || studentInfo.升学目标) {
+            systemPrompt += `\n以下是学生的基本信息：`;
+            if (studentInfo.studentName) systemPrompt += `\n姓名：${studentInfo.studentName}`;
+            if (studentInfo.educationLevel) systemPrompt += `\n教育阶段：${studentInfo.educationLevel}`;
+            if (studentInfo.interestMajor) systemPrompt += `\n感兴趣的专业领域：${studentInfo.interestMajor}`;
+            if (studentInfo.升学目标) systemPrompt += `\n升学目标：${studentInfo.升学目标}`;
+        }
+        
+        // 准备API请求数据
+        const messages = [
+            {
+                role: "system",
+                content: systemPrompt
+            },
+            ...conversationHistory,
+            {
+                role: "user",
+                content: userMessage
             }
+        ];
+        
+        // 构建API请求
+        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer sk-37ae9c5a66764abca05c91e142157daa'
+            },
+            body: JSON.stringify({
+                model: 'deepseek-chat',
+                messages: messages,
+                temperature: 0.7,
+                max_tokens: 1000
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`API请求失败: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const aiResponse = data.choices[0].message.content;
+        
+        // 移除"正在思考"动画
+        removeTypingIndicator();
+        
+        return aiResponse;
+    } catch (error) {
+        console.error('获取AI回复时出错:', error);
+        
+        // 移除"正在思考"动画
+        removeTypingIndicator();
+        
+        // 返回错误消息
+        return "很抱歉，获取回复时发生错误。请稍后再试。";
+    }
+}
             
             // 格式化AI回答以提高条理性
             function formatAIResponse(response) {
@@ -720,7 +938,7 @@
                     }
                     
                     // 统一格式化，确保每次回复都保持简洁一致
-                    return `<p>${simplifiedResponse}</p><p style="margin-top: 10px; font-weight: bold;">请告诉我更多关于您的情况，如您目前的教育阶段、感兴趣的专业领域、升学目标等，我将为您提供更详细的建议。</p>`;
+                    return `<p>${simplifiedResponse}</p><p style="margin-top: 10px; font-weight: bold;">请告诉我更多关于您的情况，我将为您提供更详细的建议。</p>`;
                 }
                 
                 // 第六次及以后的询问：以清晰准确完备有条理的方式回答
@@ -747,6 +965,36 @@
                     // 对非结构化内容进行智能分段和结构化处理
                     return formatUnstructuredResponse(trimmedResponse);
                 }
+                // 格式化结构化响应
+function formatStructuredResponse(response) {
+    // 将换行符替换为HTML换行标签
+    let formattedResponse = response.replace(/\n/g, '<br>');
+    
+    // 将列表项格式化为HTML列表
+    formattedResponse = formattedResponse.replace(/\d+\.(.+)/g, '<li>$1</li>');
+    formattedResponse = formattedResponse.replace(/(<li>.+<\/li>)+/g, '<ol>$&</ol>');
+    
+    // 将标题格式化为HTML标题标签
+    formattedResponse = formattedResponse.replace(/^(.+)$/gm, '<p>$1</p>');
+    
+    return formattedResponse;
+}
+
+// 格式化非结构化响应
+function formatUnstructuredResponse(response) {
+    // 对非结构化内容进行智能分段
+    // 这里我们简单地按句号分割，并为每个句子创建一个段落
+    const sentences = response.split(/\。|\！|\？/).filter(sentence => sentence.trim() !== '');
+    
+    if (sentences.length <= 1) {
+        // 如果只有一句话或没有句号，直接返回
+        return `<p>${response}</p>`;
+    }
+    
+    // 为每个句子创建一个段落
+    const paragraphs = sentences.map(sentence => `<p>${sentence}</p>`);
+    return paragraphs.join('\n');
+}
             }
             
             
@@ -825,9 +1073,209 @@ generatePdfBtn.addEventListener('click', function() {
     reportModal.classList.add('hidden');
 });
            
+            // 恢复表单数据
+            restoreFormData();
+            
             // 初始化页面
             scrollToBottom();
         });
     </script>
 </body>
 </html>
+    <!-- 信息收集表单模态框 -->
+    <div id="info-collection-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 transform transition-all max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">完善个人信息</h3>
+                <button id="cancel-info" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="student-info-form" class="space-y-4 overflow-y-auto pr-2 flex-grow">
+                <div>
+                    <label class="block text-sm font-medium mb-1">姓名 *</label>
+                    <input type="text" id="student-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1">教育阶段 *</label>
+                    <select id="education-level" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" required>
+                        <option value="">请选择</option>
+                        <option value="初中">初中</option>
+                        <option value="高中">高中</option>
+                        <option value="中职">中职</option>
+                        <option value="高职">高职</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1">感兴趣的专业领域</label>
+                    <input type="text" id="interest-major" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="例如：计算机、机械、护理等">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1">升学目标</label>
+                    <input type="text" id="升学目标" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="例如：升入高职、本科等">
+                </div>
+                
+                <!-- 添加结构化信息收集表格 -->
+                <div class="mt-4">
+                    <h4 class="text-lg font-semibold mb-2">基础身份信息</h4>
+                    <table class="w-full text-sm border-collapse border border-gray-300">
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">性别</td>
+                            <td class="border border-gray-300 p-2">
+                                <select id="gender" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50">
+                                    <option value="">请选择</option>
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">出生日期</td>
+                            <td class="border border-gray-300 p-2">
+                                <input type="date" id="birth-date" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">身份证号</td>
+                            <td class="border border-gray-300 p-2">
+                                <input type="text" id="id-number" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入身份证号">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">学籍号</td>
+                            <td class="border border-gray-300 p-2">
+                                <input type="text" id="student-id" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入学籍号">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">户籍所在地</td>
+                            <td class="border border-gray-300 p-2">
+                                <input type="text" id="household-location" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入户籍所在地">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">联系方式</td>
+                            <td class="border border-gray-300 p-2">
+                                <input type="text" id="contact-info" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入联系方式">
+                            </td>
+                        </tr>
+                    </table>
+                    <p class="text-xs text-gray-500 mt-1">（用途：志愿系统登录及学籍注册依据）</p>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="text-lg font-semibold mb-2">中考成绩与排名</h4>
+                    <table class="w-full text-sm border-collapse border border-gray-300">
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">各科具体分数</td>
+                            <td class="border border-gray-300 p-2">
+                                <input type="text" id="subject-scores" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="例如：语文120,数学110,英语115">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">总分</td>
+                            <td class="border border-gray-300 p-2">
+                                <input type="number" id="total-score" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入总分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">等级</td>
+                            <td class="border border-gray-300 p-2">
+                                <input type="text" id="grade-level" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="例如：7A+">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">全市/区排名位次</td>
+                            <td class="border border-gray-300 p-2">
+                                <input type="number" id="ranking" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入排名">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">最低控制线</td>
+                            <td class="border border-gray-300 p-2">
+                                <input type="text" id="control-line" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="例如：来宾市549分">
+                            </td>
+                        </tr>
+                    </table>
+                    <p class="text-xs text-gray-500 mt-1">（用途：判断志愿梯度与录取概率的核心依据）</p>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="text-lg font-semibold mb-2">学业能力证明</h4>
+                    <table class="w-full text-sm border-collapse border border-gray-300">
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">文化课成绩单</td>
+                            <td class="border border-gray-300 p-2">
+                                <textarea id="academic-transcript" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入文化课成绩，如语数外主科+物理/化学等弱项科目"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">技能课成绩</td>
+                            <td class="border border-gray-300 p-2">
+                                <input type="text" id="skill-grades" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="如信息技术、实验操作等级">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">获奖证书</td>
+                            <td class="border border-gray-300 p-2">
+                                <textarea id="certificates" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入获奖证书信息，如学科竞赛、技能大赛"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                    <p class="text-xs text-gray-500 mt-1">（用途：匹配需专业基础的职高方向，如人工智能、物联网）</p>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="text-lg font-semibold mb-2">家庭基础条件</h4>
+                    <table class="w-full text-sm border-collapse border border-gray-300">
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">家庭年收入范围</td>
+                            <td class="border border-gray-300 p-2">
+                                <select id="family-income" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50">
+                                    <option value="">请选择</option>
+                                    <option value="5万以下">5万以下</option>
+                                    <option value="5-10万">5-10万</option>
+                                    <option value="10-20万">10-20万</option>
+                                    <option value="20万以上">20万以上</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">是否低保户/建档立卡</td>
+                            <td class="border border-gray-300 p-2">
+                                <select id="low-income" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50">
+                                    <option value="">请选择</option>
+                                    <option value="是">是</option>
+                                    <option value="否">否</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 bg-gray-50">可承受学费上限</td>
+                            <td class="border border-gray-300 p-2">
+                                <select id="tuition-capacity" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50">
+                                    <option value="">请选择</option>
+                                    <option value="2万以下">2万以下</option>
+                                    <option value="2-3万">2-3万</option>
+                                    <option value="3-5万">3-5万</option>
+                                    <option value="5万以上">5万以上</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <p class="text-xs text-gray-500 mt-1">（用途：筛选公办免学费或助学金项目）</p>
+                </div>
+                
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                        提交信息
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>

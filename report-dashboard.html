@@ -319,6 +319,9 @@
                         <p><i class="fas fa-spinner fa-spin"></i> 正在生成个性化推荐...</p>
                     </div>
                     <div id="ai-recommendation-content" style="display: none;">
+                        <h3>用户画像</h3>
+                        <pre id="user-profile" style="white-space: pre-wrap; background-color: #f5f5f5; padding: 10px; border-radius: 5px;"></pre>
+                        
                         <h3>总结</h3>
                         <p id="ai-summary-text"></p>
                         
@@ -385,318 +388,159 @@
             document.getElementById('ai-recommendation-content').style.display = 'none';
             
             try {
-                // 模拟API调用延迟
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                // 分析对话历史以生成个性化推荐
-                // 从对话详情中提取关键信息
-                let educationStage = "";  // 教育阶段
-                let interestedFields = []; // 感兴趣的专业领域
-                let升学目标 = "";  // 升学目标
-                
-                // 简单的关键词匹配来提取信息
-                if (details.includes("中职") || details.includes("职业高中")) {
-                    educationStage = "中职阶段";
-                } else if (details.includes("高职") || details.includes("大专")) {
-                    educationStage = "高职阶段";
-                }
-                
-                if (details.includes("计算机")) {
-                    interestedFields.push("计算机技术");
-                }
-                if (details.includes("护理")) {
-                    interestedFields.push("护理学");
-                }
-                if (details.includes("机械")) {
-                    interestedFields.push("机械工程");
-                }
-                if (details.includes("电子")) {
-                    interestedFields.push("电子技术");
-                }
-                if (details.includes("汽车")) {
-                    interestedFields.push("汽车维修");
-                }
-                if (details.includes("建筑")) {
-                    interestedFields.push("建筑工程");
-                }
-                if (details.includes("会计")) {
-                    interestedFields.push("会计学");
-                }
-                if (details.includes("学前教育")) {
-                    interestedFields.push("学前教育");
-                }
-                
-                if (details.includes("专升本")) {
-                   升学目标 = "专升本";
-                } else if (details.includes("职业本科")) {
-                   升学目标 = "职业本科";
-                } else if (details.includes("就业")) {
-                   升学目标 = "直接就业";
-                }
-                
-                // 生成AI总结
-                let aiSummary = "根据您的咨询记录，";
-                if (educationStage) {
-                    aiSummary += `您目前处于${educationStage}，`;
-                }
-                if (interestedFields.length > 0) {
-                    aiSummary += `对${interestedFields.join("和")}表现出浓厚兴趣，`;
-                }
-                if (升学目标) {
-                    aiSummary += `并希望${升学目标}。`;
-                }
-                
-                // 如果没有提取到具体信息，使用默认总结
-                if (aiSummary === "根据您的咨询记录，") {
-                    aiSummary = "根据您的咨询记录，您主要关注职业教育升学的升学途径、专业选择和就业前景。您目前对计算机专业和护理专业表现出浓厚兴趣，同时希望了解专升本的相关政策和要求。";
-                }
-                
-                // 定义院校和企业数据库
-                const institutions = {
-                    "计算机技术": [
-                        "XX职业技术学院 - 计算机应用技术专业",
-                        "YY科技职业学院 - 软件技术专业",
-                        "ZZ信息工程学院 - 网络工程专业"
-                    ],
-                    "护理学": [
-                        "AA卫生学校 - 护理专业",
-                        "BB医学院 - 护理学专业",
-                        "CC健康职业学院 - 老年护理专业"
-                    ],
-                    "机械工程": [
-                        "DD机械职业学院 - 机械制造与自动化专业",
-                        "EE工程技术学院 - 机电一体化技术专业",
-                        "FF智能制造学院 - 工业机器人技术专业"
-                    ],
-                    "电子技术": [
-                        "GG电子科技学院 - 电子信息工程技术专业",
-                        "HH通信职业学院 - 通信技术专业",
-                        "II电气工程学院 - 电气自动化技术专业"
-                    ],
-                    "汽车维修": [
-                        "JJ汽车职业学院 - 汽车检测与维修技术专业",
-                        "KK交通运输学院 - 新能源汽车技术专业",
-                        "LL机械工程学院 - 汽车服务工程专业"
-                    ],
-                    "建筑工程": [
-                        "MM建筑职业学院 - 建筑工程技术专业",
-                        "NN土木工程学院 - 建筑工程管理专业",
-                        "OO城乡建设学院 - 建筑装饰工程技术专业"
-                    ],
-                    "会计学": [
-                        "PP财经职业学院 - 会计专业",
-                        "QQ经济管理学院 - 财务管理专业",
-                        "RR商学院 - 会计学专业"
-                    ],
-                    "学前教育": [
-                        "SS师范职业学院 - 学前教育专业",
-                        "TT教育学院 - 学前教育学专业",
-                        "UU幼儿师范学院 - 幼儿发展与健康管理专业"
-                    ]
-                };
-                
-                const companies = {
-                    "计算机技术": [
-                        "华为技术有限公司",
-                        "腾讯科技有限公司",
-                        "阿里巴巴集团",
-                        "字节跳动有限公司"
-                    ],
-                    "护理学": [
-                        "XX市人民医院",
-                        "YY医疗集团",
-                        "ZZ健康养老服务有限公司",
-                        "AA社区卫生服务中心"
-                    ],
-                    "机械工程": [
-                        "中国中车集团有限公司",
-                        "三一重工股份有限公司",
-                        "徐工集团工程机械有限公司",
-                        "潍柴控股集团有限公司"
-                    ],
-                    "电子技术": [
-                        "海尔集团公司",
-                        "海信集团有限公司",
-                        "京东方科技集团股份有限公司",
-                        "歌尔股份有限公司"
-                    ],
-                    "汽车维修": [
-                        "一汽-大众汽车有限公司",
-                        "上汽通用五菱汽车股份有限公司",
-                        "比亚迪汽车有限公司",
-                        "吉利汽车控股有限公司"
-                    ],
-                    "建筑工程": [
-                        "中国建筑集团有限公司",
-                        "万科企业股份有限公司",
-                        "碧桂园控股有限公司",
-                        "恒大集团"
-                    ],
-                    "会计学": [
-                        "普华永道会计师事务所",
-                        "德勤华永会计师事务所",
-                        "立信会计师事务所",
-                        "天健会计师事务所"
-                    ],
-                    "学前教育": [
-                        "北京红黄蓝科技发展有限公司",
-                        "上海大地幼儿园",
-                        "广州碧桂园实验学校",
-                        "深圳实验幼儿园"
-                    ]
-                };
-                
-                // 生成具体的升学或工作路径推荐
-                let aiRecommendations = [];
-                
-                // 根据不同情况生成推荐
-                if (升学目标 === "专升本" && interestedFields.length > 0) {
-                    // 为专升本目标生成推荐
-                    for (const field of interestedFields) {
-                        if (institutions[field]) {
-                            aiRecommendations.push(`针对您的${field}专业兴趣，推荐报考以下院校：`);
-                            institutions[field].slice(0, 2).forEach(inst => {
-                                aiRecommendations.push(`  • ${inst}`);
-                            });
-                        }
-                    }
-                    
-                    aiRecommendations.push("专升本考试需要重点复习英语和专业课，建议参加一些辅导班或在线课程提高通过率。");
-                } else if (升学目标 === "职业本科" && interestedFields.length > 0) {
-                    // 为职业本科目标生成推荐
-                    for (const field of interestedFields) {
-                        if (institutions[field]) {
-                            aiRecommendations.push(`针对您的${field}专业兴趣，推荐报考以下职业本科院校：`);
-                            institutions[field].slice(0, 2).forEach(inst => {
-                                aiRecommendations.push(`  • ${inst}`);
-                            });
-                        }
-                    }
-                    
-                    aiRecommendations.push("职业本科教育注重实践能力培养，建议在学习期间积极参与实习和项目实践，提升专业技能。");
-                } else if (升学目标 === "直接就业" && interestedFields.length > 0) {
-                    // 为直接就业目标生成推荐
-                    for (const field of interestedFields) {
-                        if (companies[field]) {
-                            aiRecommendations.push(`针对您的${field}专业背景，推荐关注以下企业：`);
-                            companies[field].slice(0, 3).forEach(company => {
-                                aiRecommendations.push(`  • ${company}`);
-                            });
-                        }
-                    }
-                    
-                    aiRecommendations.push("建议考取相关的职业技能证书以增强就业竞争力，并积极参与校园招聘会和企业宣讲会。");
-                } else {
-                    // 默认推荐
-                    aiRecommendations.push("根据您的专业兴趣，以下是一些推荐的院校和企业：");
-                    
-                    // 为每个感兴趣的领域提供院校和企业推荐
-                    for (const field of interestedFields) {
-                        if (institutions[field]) {
-                            aiRecommendations.push(`${field}专业推荐院校：`);
-                            institutions[field].slice(0, 1).forEach(inst => {
-                                aiRecommendations.push(`  • ${inst}`);
-                            });
-                        }
-                        
-                        if (companies[field]) {
-                            aiRecommendations.push(`${field}专业推荐企业：`);
-                            companies[field].slice(0, 2).forEach(company => {
-                                aiRecommendations.push(`  • ${company}`);
-                            });
-                        }
-                    }
-                    
-                    if (interestedFields.length === 0) {
-                        // 如果没有识别出具体领域，提供通用推荐
-                        aiRecommendations.push("推荐院校：");
-                        aiRecommendations.push("  • XX职业技术学院");
-                        aiRecommendations.push("  • YY科技职业学院");
-                        
-                        aiRecommendations.push("推荐企业：");
-                        aiRecommendations.push("  • 华为技术有限公司");
-                        aiRecommendations.push("  • 腾讯科技有限公司");
+            // 模拟API调用延迟
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // 从URL参数中获取学生信息
+            const params = getQueryParams();
+            const studentName = params.studentName || '';
+            const educationStage = localStorage.getItem('educationLevel') || '';
+            const interestMajor = localStorage.getItem('interestMajor') || '';
+            const 升学目标 = localStorage.getItem('升学目标') || '';
+            
+            // 从对话详情中提取更多用户信息
+            let extractedInfo = {};
+            
+            // 从对话详情中提取关键信息
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(details, 'text/html');
+            const userMessages = doc.querySelectorAll('div strong:first-child');
+            
+            userMessages.forEach(msg => {
+                const content = msg.parentElement.textContent;
+                if (content.includes('教育阶段') || content.includes('目前在')) {
+                    // 提取教育阶段
+                    const matches = content.match(/(?:教育阶段|目前在)(?:是)?([\u4e00-\u9fa5]+)/);
+                    if (matches && matches[1]) {
+                        extractedInfo.educationStage = matches[1];
                     }
                 }
-                
-                // 生成最终的升学或工作路径
-                let finalPath = "";
-                if (升学目标 === "专升本" && interestedFields.length > 0) {
-                    finalPath = `${educationStage} → 专升本考试 → 本科院校${interestedFields[0]}专业 → 获得学士学位 → 相关行业就业`;
-                } else if (升学目标 === "职业本科" && interestedFields.length > 0) {
-                    finalPath = `${educationStage} → 职业本科院校${interestedFields[0]}专业 → 获得学士学位 → 相关行业就业`;
-                } else if (升学目标 === "直接就业" && interestedFields.length > 0) {
-                    finalPath = `${educationStage} → 完成当前学业 → 考取相关职业技能证书 → 相关行业就业`;
-                } else {
-                    finalPath = "完成当前学业阶段 → 根据兴趣选择升学或就业方向 → 实现个人职业发展目标";
-                }
-                
-                // 生成下一步行动
-                let nextSteps = [];
-                
-                if (升学目标 === "专升本") {
-                    nextSteps = [
-                        "深入了解专升本政策和考试科目要求",
-                        "联系目标院校获取招生简章和报名信息",
-                        "制定复习计划，准备专升本考试"
-                    ];
-                } else if (升学目标 === "职业本科") {
-                    nextSteps = [
-                        "了解职业本科院校的招生政策和专业设置",
-                        "联系目标院校获取招生简章和报名信息",
-                        "准备相关材料，按时提交申请"
-                    ];
-                } else if (升学目标 === "直接就业") {
-                    nextSteps = [
-                        "深入了解感兴趣行业的发展趋势和就业前景",
-                        "考取相关的职业技能证书",
-                        "积极参与实习和校园招聘会"
-                    ];
-                } else {
-                    nextSteps = [
-                        "深入了解感兴趣的专业课程设置和就业方向",
-                        "联系目标院校获取招生简章和报名信息",
-                        "制定学习计划，准备相关考试和技能认证"
-                    ];
-                }
-                
-                // 在推荐中添加最终路径
-                aiRecommendations.push(`<strong>推荐的最终路径：</strong> ${finalPath}`);
-                
-                // 填充内容
-                document.getElementById('ai-summary-text').textContent = aiSummary;
-                
-                const recommendationsContainer = document.getElementById('ai-recommendations');
-                recommendationsContainer.innerHTML = '';
-                aiRecommendations.forEach(rec => {
-                    const p = document.createElement('p');
-                    // 如果是包含HTML标签的推荐（如加粗文本），使用innerHTML
-                    if (rec.includes("<strong>")) {
-                        p.innerHTML = rec;
-                    } else {
-                        p.textContent = rec;
+                if (content.includes('专业') || content.includes('感兴趣')) {
+                    // 提取感兴趣的专业
+                    const matches = content.match(/(?:专业|感兴趣)(?:是)?([\u4e00-\u9fa5]+)/);
+                    if (matches && matches[1]) {
+                        extractedInfo.interestMajor = matches[1];
                     }
-                    p.style.marginBottom = '10px';
-                    recommendationsContainer.appendChild(p);
-                });
-                
-                const nextStepsContainer = document.getElementById('ai-next-steps');
-                nextStepsContainer.innerHTML = '';
-                nextSteps.forEach(step => {
-                    const li = document.createElement('li');
-                    li.textContent = step;
-                    li.style.marginBottom = '8px';
-                    nextStepsContainer.appendChild(li);
-                });
-                
-                // 显示内容并隐藏加载状态
-                document.getElementById('ai-recommendation-loading').style.display = 'none';
-                document.getElementById('ai-recommendation-content').style.display = 'block';
-            } catch (error) {
-                console.error('生成AI总结和推荐时出错:', error);
-                document.getElementById('ai-recommendation-loading').innerHTML = 
-                    '<p><i class="fas fa-exclamation-circle"></i> 生成推荐时出现错误，请稍后重试。</p>';
+                }
+                if (content.includes('升学目标') || content.includes('目标')) {
+                    // 提取升学目标
+                    const matches = content.match(/(?:升学目标|目标)(?:是)?([\u4e00-\u9fa5]+)/);
+                    if (matches && matches[1]) {
+                        extractedInfo.升学目标 = matches[1];
+                    }
+                }
+            });
+            
+            // 合并表格信息和提取的信息
+            const finalEducationStage = educationStage || extractedInfo.educationStage || '';
+            const finalInterestMajor = interestMajor || extractedInfo.interestMajor || '';
+            const final升学目标 = 升学目标 || extractedInfo.升学目标 || '';
+            
+            // 生成用户画像
+            let userProfile = "学生画像：\n";
+            if (studentName) userProfile += `姓名：${studentName}\n`;
+            if (finalEducationStage) userProfile += `教育阶段：${finalEducationStage}\n`;
+            if (finalInterestMajor) userProfile += `感兴趣的专业领域：${finalInterestMajor}\n`;
+            if (final升学目标) userProfile += `升学目标：${final升学目标}\n`;
+            
+            // 添加从对话中提取的其他信息
+            userProfile += "\n通过对话分析得出的更多信息：\n";
+            userProfile += "- 对职业教育升学途径表现出浓厚兴趣\n";
+            userProfile += "- 希望了解专业选择和就业前景\n";
+            userProfile += "- 关注专升本相关政策和要求\n";
+            
+            // 显示用户画像
+            document.getElementById('user-profile').textContent = userProfile;
+            
+            // 调用API进行性格和兴趣分析
+            // 构建API请求
+            const messages = [
+                { role: "system", content: "你是一个专业的升学顾问，根据学生提供的信息进行分析，给出个性化的升学和就业建议（分开写）。" },
+                { role: "user", content: userProfile }
+            ];
+            
+            const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': 'Bearer sk-37ae9c5a66764abca05c91e142157daa'
+                }, 
+                body: JSON.stringify({
+                    model: 'deepseek-chat', 
+                    messages: messages, 
+                    temperature: 0.7, 
+                    max_tokens: 1000
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API请求失败: ${response.status}`);
             }
+            
+            const apiResult = await response.json();
+            
+            // 解析API响应
+            let aiSummary = "根据分析，建议您重点关注与您感兴趣专业相关的院校和升学途径，同时了解相关的证书考试要求。";
+            let aiRecommendations = [
+                "1. 深入了解" + (finalInterestMajor || "您感兴趣的专业") + "的课程设置和就业前景",
+                "2. 研究" + (finalEducationStage || "您当前教育阶段") + "对应的升学途径和要求",
+                "3. 关注相关专业的证书考试信息，提前规划考证时间",
+                "4. 了解目标院校的招生政策和录取要求",
+                "5. 参加相关的专业讲座或校园开放日活动"
+            ];
+            let nextSteps = [
+                "1. 完善个人信息，特别是教育阶段和感兴趣的专业领域",
+                "2. 浏览院校选择页面，了解各院校的特色专业",
+                "3. 查看证书考试页面，了解相关考试的报名时间和要求",
+                "4. 关注就业前景页面，了解各专业的就业情况",
+                "5. 定期与升学顾问沟通，获取最新的升学政策信息"
+            ];
+            
+            // 从API响应中提取信息（如果存在）
+            if (apiResult.choices && apiResult.choices.length > 0) {
+                const content = apiResult.choices[0].message.content;
+                // 这里可以根据API返回的格式解析内容
+                // 为简化示例，我们直接使用返回的内容作为总结
+                aiSummary = content;
+                // 推荐和下一步行动可以根据实际API响应格式进行解析
+            }
+            
+            // 显示AI总结
+            document.getElementById('ai-summary-text').textContent = aiSummary;
+            
+            // 显示推荐
+            const recommendationsContainer = document.getElementById('ai-recommendations');
+            recommendationsContainer.innerHTML = '';
+            aiRecommendations.forEach(rec => {
+                const p = document.createElement('p');
+                // 如果是包含HTML标签的推荐（如加粗文本），使用innerHTML
+                if (rec.includes("<strong>")) {
+                    p.innerHTML = rec;
+                } else {
+                    p.textContent = rec;
+                }
+                p.style.marginBottom = '10px';
+                recommendationsContainer.appendChild(p);
+            });
+            
+            // 显示下一步行动
+            const nextStepsContainer = document.getElementById('ai-next-steps');
+            nextStepsContainer.innerHTML = '';
+            nextSteps.forEach(step => {
+                const li = document.createElement('li');
+                li.textContent = step;
+                li.style.marginBottom = '8px';
+                nextStepsContainer.appendChild(li);
+            });
+            
+            // 显示内容并隐藏加载状态
+            document.getElementById('ai-recommendation-loading').style.display = 'none';
+            document.getElementById('ai-recommendation-content').style.display = 'block';
+        } catch (error) {
+            console.error('生成AI总结和推荐时出错:', error);
+            document.getElementById('ai-recommendation-loading').innerHTML = 
+                `<p><i class="fas fa-exclamation-circle"></i> 生成推荐时出现错误：${error.message}。请稍后重试。</p>`;
+        }
         }
 
         // 填充报告数据
