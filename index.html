@@ -966,15 +966,43 @@ async function getAIResponse(userMessage) {
                     return formatUnstructuredResponse(trimmedResponse);
                 }
                 // 格式化结构化响应
+// 格式化结构化响应
 function formatStructuredResponse(response) {
     // 将换行符替换为HTML换行标签
     let formattedResponse = response.replace(/\n/g, '<br>');
     
-    // 将列表项格式化为HTML列表
-    formattedResponse = formattedResponse.replace(/\d+\.(.+)/g, '<li>$1</li>');
-    formattedResponse = formattedResponse.replace(/(<li>.+<\/li>)+/g, '<ol>$&</ol>');
+    // 处理多级列表项，支持1. 1.1 1.1.1等格式
+    formattedResponse = formattedResponse.replace(/(\d+(\.\d+)*)\.(.+?)(?=<br>|$)/g, function(match, p1, p2, p3) {
+        const level = p1.split('.').length;
+        const marginLeft = (level - 1) * 20;
+        return `<div style="margin: 5px 0 5px ${marginLeft}px;"><strong>${p1}.</strong> ${p3}</div>`;
+    });
     
-    // 将标题格式化为HTML标题标签
+    // 处理带括号的列表项
+    formattedResponse = formattedResponse.replace(/(\(\d+(\.\d+)*\))(.+?)(?=<br>|$)/g, function(match, p1, p2, p3) {
+        const level = p1.split('.').length;
+        const marginLeft = (level - 1) * 20;
+        return `<div style="margin: 5px 0 5px ${marginLeft}px;">${p1} ${p3}</div>`;
+    });
+    
+    // 处理中文数字列表项
+    formattedResponse = formattedResponse.replace(/([一二三四五六七八九十]+[、.])(.+?)(?=<br>|$)/g, function(match, p1, p2) {
+        const level = p1.split(/[一-龥]/).length - 1;
+        const marginLeft = (level - 1) * 20;
+        return `<div style="margin: 5px 0 5px ${marginLeft}px;"><strong>${p1}</strong> ${p2}</div>`;
+    });
+    
+    // 处理无序列表项
+    formattedResponse = formattedResponse.replace(/([*\-]\s*)(.+?)(?=<br>|$)/g, '<div style="margin: 5px 0 5px 20px;">• $2</div>');
+    
+    // 将连续的列表项包装在div中以增加间距
+    formattedResponse = formattedResponse.replace(/(<div.*?<\/div>)+/g, '<div style="margin: 10px 0;">$&</div>');
+    
+    // 处理标题，支持##标题##或**标题**格式
+    formattedResponse = formattedResponse.replace(/##(.+?)##/g, '<h3 style="margin: 15px 0 10px 0; color: #333;">$1</h3>');
+    formattedResponse = formattedResponse.replace(/\*\*(.+?)\*\*/g, '<h3 style="margin: 15px 0 10px 0; color: #333;">$1</h3>');
+    
+    // 将普通段落格式化为p标签
     formattedResponse = formattedResponse.replace(/^(.+)$/gm, '<p>$1</p>');
     
     return formattedResponse;
