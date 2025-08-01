@@ -1122,6 +1122,7 @@ async function getAIResponse(userMessage) {
             // 格式化AI回答以提高条理性
             function formatAIResponse(response) {
                 // 前五次询问：简要概括用户特点，并引导用户提问
+                response = response.replace(/[\*#]/g, '');
                 if (userQuestionCount < 5) {
                     // 保持AI回复的简洁性，仅进行基本的HTML格式化
                     let simplifiedResponse = response.trim();
@@ -1207,7 +1208,9 @@ async function getAIResponse(userMessage) {
                 // 格式化结构化响应
 function formatStructuredResponse(response) {
     // 将换行符替换为HTML换行标签
+    response = response.replace(/[\*#]/g, '');
     let formattedResponse = response.replace(/\n/g, '<br>');
+    
     
     // 将列表项格式化为HTML列表
     formattedResponse = formattedResponse.replace(/\d+\.(.+)/g, '<li>$1</li>');
@@ -1221,6 +1224,7 @@ function formatStructuredResponse(response) {
 
 // 格式化非结构化响应
 function formatUnstructuredResponse(response) {
+    response = response.replace(/[\*#]/g, '');
     // 对非结构化内容进行智能分段
     // 这里我们简单地按句号分割，并为每个句子创建一个段落
     const sentences = response.split(/\。|\！|\？/).filter(sentence => sentence.trim() !== '');
@@ -1294,19 +1298,21 @@ generatePdfBtn.addEventListener('click', function() {
         }
     });
     
-    // 构建URL参数
-    const params = new URLSearchParams({
-        studentName: encodeURIComponent(studentName),
-        reportTitle: encodeURIComponent(reportTitle),
-        consultationType: encodeURIComponent(consultationType),
-        date: encodeURIComponent(new Date().toLocaleDateString('zh-CN')),
-        generatedDate: encodeURIComponent(new Date().toLocaleString('zh-CN')),
-        summary: encodeURIComponent(summary),
-        details: encodeURIComponent(detailsHTML)
-    });
+    // 将数据存储到localStorage
+    const reportData = {
+        studentName: studentName,
+        reportTitle: reportTitle,
+        consultationType: consultationType,
+        date: new Date().toLocaleDateString('zh-CN'),
+        generatedDate: new Date().toLocaleString('zh-CN'),
+        summary: summary,
+        details: detailsHTML
+    };
+    
+    localStorage.setItem('reportData', JSON.stringify(reportData));
     
     // 跳转到报告仪表板页面
-    window.open(`report-dashboard.html?${params.toString()}`, '_blank');
+    window.open('report-dashboard.html', '_blank');
     
     // 关闭模态框
     reportModal.classList.add('hidden');

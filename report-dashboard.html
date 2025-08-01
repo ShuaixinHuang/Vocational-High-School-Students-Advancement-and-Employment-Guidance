@@ -352,33 +352,25 @@
     </div>
 
     <script>
-        // 从URL参数获取报告数据
+        // 获取URL参数
         function getQueryParams() {
-            const params = new URLSearchParams(window.location.search);
-            const data = {
-                studentName: params.get('studentName') || '未知',
-                reportTitle: params.get('reportTitle') || '职业教育升学咨询报告',
-                consultationType: params.get('consultationType') || '综合咨询',
-                date: params.get('date') || new Date().toLocaleDateString('zh-CN'),
-                generatedDate: params.get('generatedDate') || new Date().toLocaleString('zh-CN'),
-                summary: params.get('summary') || '本次咨询围绕职业教育升学相关问题展开，主要涉及升学途径、院校选择、专业介绍等方面的内容。咨询顾问根据学生的具体情况，提供了个性化的建议和指导。',
-                details: params.get('details') || ''
-            };
-            
-            // 更安全的解码方式，避免二次解码导致的乱码
-            Object.keys(data).forEach(key => {
+            // 首先尝试从localStorage获取数据
+            const reportData = localStorage.getItem('reportData');
+            if (reportData) {
                 try {
-                    // 检查是否需要解码（通过检查是否包含编码字符）
-                    if (data[key] && (data[key].includes('%') || data[key].includes('+'))) {
-                        data[key] = decodeURIComponent(data[key]);
-                    }
+                    return JSON.parse(reportData);
                 } catch (e) {
-                    console.warn(`解码参数 ${key} 时出错:`, e);
-                    // 如果解码失败，保持原始值
+                    console.error('解析报告数据时出错:', e);
                 }
-            });
+            }
             
-            return data;
+            // 如果localStorage中没有数据，则回退到URL参数方式（兼容旧版本）
+            const params = new URLSearchParams(window.location.search);
+            const decodedParams = {};
+            for (const [key, value] of params) {
+                decodedParams[key] = decodeURIComponent(value);
+            }
+            return decodedParams;
         }
 
         // 生成AI总结和推荐
