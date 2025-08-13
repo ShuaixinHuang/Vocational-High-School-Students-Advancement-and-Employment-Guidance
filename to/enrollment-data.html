@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>升学数据</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Chart.js库 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <header class="bg-white shadow-md py-4 px-6 flex items-start mb-8">
+        <img src="1111.png" alt="图标" class="h-12 w-12 mr-4 mt-2">
+        <h1 class="text-2xl font-bold text-gray-800 mt-2">专宝JOBO职业教育升学数据统计</h1>
+        <img src="2222.png" alt="装饰图片" class="h-16 w-18"> <!-- 添加的图片 -->
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">升学数据可视化</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- 饼图容器 -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-gray-800 mb-4 text-center">各升学途径占比</h3>
+                    <canvas id="pathChart" width="400" height="400"></canvas>
+                </div>
+                
+                <!-- 柱状图容器 -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-gray-800 mb-4 text-center">历年升学率变化</h3>
+                    <canvas id="trendChart" width="400" height="400"></canvas>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg mb-8">
+                <h3 class="text-lg font-medium text-gray-800 mb-4 text-center">技能证书认可度</h3>
+                <canvas id="certificateChart" width="400" height="100"></canvas>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">数据解读</h2>
+            <div class="space-y-4">
+                <p class="text-gray-600">根据统计数据显示，职业教育升学率近年来持续上升，2024年达到了68.5%，表明职业教育在高等教育中的地位日益重要。</p>
+                <p class="text-gray-600">在各类升学途径中，专升本考试是最主要的升学方式，占比达到45%，高职院校毕业生通过这一途径继续深造的比例最高。</p>
+                <p class="text-gray-600">技能证书在升学中的作用日益凸显，92.3%的教育机构认可国家级职业技能证书，为学生升学提供了有力支持。</p>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">建议</h2>
+            <p class="text-gray-600">建议学生在选择升学途径时，应结合自身专业特点和职业规划，关注技能证书的获取，这将有助于提升升学竞争力。同时，要密切关注教育政策变化，及时调整升学策略。</p>
+        </section>
+    </main>
+
+    <footer class="bg-white shadow-md py-4 px-6 mt-8">
+        <a href="index.html" class="text-blue-500 hover:text-blue-700">&larr; 返回主页</a>
+    </footer>
+
+    <script>
+        // 等待页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 各升学途径占比饼图
+            const pathCtx = document.getElementById('pathChart').getContext('2d');
+            const pathChart = new Chart(pathCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['专升本', '职业高中升学', '中职升学', '技能证书加分', '其他'],
+                    datasets: [{
+                        data: [45, 20, 15, 12, 8],
+                        backgroundColor: [
+                            '#165DFF',
+                            '#36D399',
+                            '#FF9F1C',
+                            '#FF6B6B',
+                            '#6B7280'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 历年升学率变化柱状图
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            const trendChart = new Chart(trendCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024'],
+                    datasets: [{
+                        label: '升学率 (%)',
+                        data: [52.3, 56.8, 61.2, 65.1, 68.5],
+                        backgroundColor: '#165DFF',
+                        borderColor: '#165DFF',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 技能证书认可度进度条图
+            const certificateCtx = document.getElementById('certificateChart').getContext('2d');
+            const certificateChart = new Chart(certificateCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['技能证书认可度'],
+                    datasets: [{
+                        label: '认可度 (%)',
+                        data: [92.3],
+                        backgroundColor: '#36D399',
+                        borderColor: '#36D399',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.x + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
