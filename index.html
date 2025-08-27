@@ -95,6 +95,42 @@
             .ai-response strong {
                 font-weight: 600;
             }
+       
+            /* 新增：优化中间聊天区域的滑动功能 */
+            .chat-container {
+                height: calc(100vh - 200px);
+                min-height: 400px;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden; /* 防止整个容器滚动 */
+            }
+
+            .chat-history-scroll {
+                overflow-y: auto;
+                scrollbar-width: thin;
+                scrollbar-color: #cbd5e1 #f1f5f9;
+                flex: 1; /* 占据剩余空间 */
+                min-height: 0; /* 允许收缩 */
+                scroll-behavior: smooth;
+            }
+
+            .chat-history-scroll::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .chat-history-scroll::-webkit-scrollbar-track {
+                background: #f1f5f9;
+                border-radius: 3px;
+            }
+
+            .chat-history-scroll::-webkit-scrollbar-thumb {
+                background: #cbd5e1;
+                border-radius: 3px;
+            }
+
+            .chat-history-scroll::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
+            }
         }
     </style>
 </head>
@@ -295,14 +331,14 @@
 
         <!-- 中间聊天区域 -->
         <section class="flex-grow flex flex-col">
-            <div class="bg-white rounded-xl shadow-sm p-6 flex-grow flex flex-col">
+            <div class="bg-white rounded-xl shadow-sm p-6 flex-grow flex flex-col chat-container">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold mb-2">专宝JOBO智能咨询助手</h2>
                     <p class="text-gray-600">我是您的专宝JOBO智能咨询助手，专注于职业教育升学咨询。请问有什么可以帮助您？</p>
                 </div>
                 
                 <!-- 聊天历史区域 -->
-                <div id="chat-history" class="flex-grow overflow-y-auto scrollbar-hide space-y-4 p-2 mb-6">
+                <div id="chat-history" class="flex-grow chat-history-scroll space-y-4 p-2">
                     <!-- 欢迎消息将在用户同意隐私协议后显示 -->
                 </div>
                 
@@ -1052,7 +1088,11 @@ async function getAIResponse(userMessage) {
             "5. 规则认知盲区：验证用户对政策的理解，纠偏误区"+
             "请根据对话历史和已收集的信息，提供个性化的建议和指导。";
         }
-        
+        systemPrompt += "请在回答时使用以下格式：\n"+
+            "1. 使用分点列出关键信息（避免大段文字）。\n"+
+            "2. 每个要点不超过3句话，简明扼要。\n"+
+            "3. 最后给出1-2个引导性问题（单独成段）。";
+
         // 添加学生基本信息到系统提示
         const studentInfo = {
             studentName: localStorage.getItem('studentName'),
@@ -1206,40 +1246,55 @@ async function getAIResponse(userMessage) {
                     return formatUnstructuredResponse(trimmedResponse);
                 }
                 // 格式化结构化响应
+// 格式化结构化响应
+// 格式化结构化响应
 function formatStructuredResponse(response) {
-    // 将换行符替换为HTML换行标签
+    // 移除特殊字符
     response = response.replace(/[\*#]/g, '');
+    
+    // 将换行符替换为HTML换行标签
     let formattedResponse = response.replace(/\n/g, '<br>');
     
+    // 将不同类型的列表项格式化为HTML列表
+    // 匹配数字编号 (1. 2. 3.)
+    formattedResponse = formattedResponse.replace(/^\s*\d+\.\s*(.+)$/gm, '<li style="margin-bottom: 8px;">$1</li>');
     
-    // 将列表项格式化为HTML列表
-    formattedResponse = formattedResponse.replace(/\d+\.(.+)/g, '<li>$1</li>');
-    formattedResponse = formattedResponse.replace(/(<li>.+<\/li>)+/g, '<ol>$&</ol>');
+    // 匹配中文编号 (一、二、三、)
+    formattedResponse = formattedResponse.replace(/^\s*[一二三四五六七八九十]+[、\.]\s*(.+)$/gm, '<li style="margin-bottom: 8px;">$1</li>');
     
-    // 将标题格式化为HTML标题标签
-    formattedResponse = formattedResponse.replace(/^(.+)$/gm, '<p>$1</p>');
+    // 匹配项目符号 (- 或 •)
+    formattedResponse = formattedResponse.replace(/^\s*[-•]\s*(.+)$/gm, '<li style="margin-bottom: 8px;">$1</li>');
+    
+    // 将连续的<li>元素包装在<ol>标签中
+    formattedResponse = formattedResponse.replace(/(<li[^>]*>.+<\/li>)+/g, '<ol style="margin: 12px 0; padding-left: 20px;">$&</ol>');
+    
+    // 将标题格式化为HTML段落标签，添加间距
+    formattedResponse = formattedResponse.replace(/^(.+)$/gm, '<p style="margin-bottom: 12px; line-height: 1.6;">$1</p>');
     
     return formattedResponse;
 }
-
+// 格式化非结构化响应
 // 格式化非结构化响应
 function formatUnstructuredResponse(response) {
+    // 移除特殊字符
     response = response.replace(/[\*#]/g, '');
+    
     // 对非结构化内容进行智能分段
-    // 这里我们简单地按句号分割，并为每个句子创建一个段落
+    // 按句号、感叹号、问号分割
     const sentences = response.split(/\。|\！|\？/).filter(sentence => sentence.trim() !== '');
     
     if (sentences.length <= 1) {
-        // 如果只有一句话或没有句号，直接返回
-        return `<p>${response}</p>`;
+        // 如果只有一句话或没有标点，直接返回段落
+        return `<p style="margin-bottom: 12px; line-height: 1.6;">${response}</p>`;
     }
     
-    // 为每个句子创建一个段落
-    const paragraphs = sentences.map(sentence => `<p>${sentence}</p>`);
+    // 为每个句子创建一个段落，添加间距
+    const paragraphs = sentences.map(sentence => 
+        `<p style="margin-bottom: 12px; line-height: 1.6;">${sentence.trim()}</p>`
+    );
+    
     return paragraphs.join('\n');
-}
-            }
-            
+}}
             
             // 报告生成模态框事件处理
 generateReportBtn.addEventListener('click', function() {

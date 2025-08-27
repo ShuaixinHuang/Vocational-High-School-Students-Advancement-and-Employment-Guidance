@@ -203,12 +203,184 @@
             background: linear-gradient(90deg, #3a5ca5 0%, #121f3d 100%);
         }
         
+        /* AI推荐部分样式 */
+        /* AI推荐部分样式 */
+        /* 用户画像区域统一布局样式 */
+        .user-profile-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .profile-item {
+            display: flex;
+            margin-bottom: 8px;
+            align-items: flex-start;
+            line-height: 1.5;
+        }
+        
+        .profile-label {
+            font-weight: 600;
+            color: #4b6cb7;
+            min-width: 100px;
+            max-width: 140px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            font-size: 14px;
+        }
+        
+        .profile-value {
+            flex: 1;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+        }
+        
+        .profile-analysis {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 6px;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .profile-analysis i {
+            color: #28a745;
+            margin-right: 8px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        
+        /* 用户画像pre标签样式 - 保持可见 */
+        #user-profile {
+            white-space: pre-wrap;
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        
+        .ai-summary-content {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .summary-paragraph {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        
+        .recommendations-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .recommendation-category {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .recommendation-category h4 {
+            color: #4b6cb7;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .recommendation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .recommendation-item i {
+            color: #ffc107;
+            margin-right: 10px;
+            margin-top: 2px;
+        }
+        
+        .action-steps {
+            counter-reset: step-counter;
+        }
+        
+        .action-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #e8f4f8;
+            border-radius: 6px;
+            border-left: 3px solid #17a2b8;
+        }
+        
+        .step-number {
+            background: #17a2b8;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+                /* 修复用户画像行太宽的问题 */
+        #user-profile {
+            max-width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        
+        .profile-value {
+            max-width: 200px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
         @media (max-width: 768px) {
             body {
                 padding: 10px;
             }
             
             .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .recommendations-section {
                 grid-template-columns: 1fr;
             }
             
@@ -324,13 +496,14 @@
                         <pre id="user-profile" style="white-space: pre-wrap; background-color: #f5f5f5; padding: 10px; border-radius: 5px;"></pre>
                         
                         <h3>总结</h3>
-                        <p id="ai-summary-text"></p>
+                        <div id="ai-summary-text"></div>
                         
                         <h3>推荐</h3>
                         <div id="ai-recommendations"></div>
                         
-                        <h3>下一步行动</h3>
-                        <ul id="ai-next-steps"></ul>
+                        
+                        
+;
                     </div>
                 </div>
             </div>
@@ -372,6 +545,111 @@
                 decodedParams[key] = decodeURIComponent(value);
             }
             return decodedParams;
+        }
+
+        // 生成结构化的用户画像HTML
+        function generateStructuredUserProfile(userProfile) {
+            const profileLines = userProfile.split('\n');
+            let profileHTML = '<div class="user-profile-card">';
+            
+            profileLines.forEach(line => {
+                if (line.trim()) {
+                    if (line.includes('：')) {
+                        const [key, value] = line.split('：');
+                        profileHTML += `
+                            <div class="profile-item">
+                                <span class="profile-label">${key}：</span>
+                                <span class="profile-value">${value}</span>
+                            </div>
+                        `;
+                    } else if (line.startsWith('-')) {
+                        profileHTML += `
+                            <div class="profile-analysis">
+                                <i class="fas fa-check-circle"></i>
+                                <span>${line.substring(1).trim()}</span>
+                            </div>
+                        `;
+                    }
+                }
+            });
+            
+            profileHTML += '</div>';
+            return profileHTML;
+        }
+        
+        // 格式化AI总结内容
+        function formatAISummary(summary) {
+            // 清理AI生成的符号和格式
+            let cleanedSummary = summary
+                .replace(/#{1,6}\s*/g, '')  // 移除Markdown标题符号 (#, ##, ###等)
+                .replace(/\*\*(.*?)\*\*/g, '$1')  // 移除加粗符号 **text**
+                .replace(/\*(.*?)\*/g, '$1')  // 移除斜体符号 *text*
+                .replace(/`(.*?)`/g, '$1')  // 移除代码符号 `text`
+                .replace(/^\s*[-*+]\s+/gm, '• ')  // 将列表符号改为更优雅的圆点
+                .replace(/^\s*\d+\.\s+/gm, '')  // 移除数字列表符号
+                .replace(/\n{3,}/g, '\n\n');  // 减少过多的空行
+            
+            // 按段落分割
+            const paragraphs = cleanedSummary.split('\n\n').filter(p => p.trim());
+            
+            let summaryHTML = '<div class="ai-summary-content">';
+            paragraphs.forEach(paragraph => {
+                if (paragraph.trim()) {
+                    summaryHTML += `<p class="summary-paragraph">${paragraph.trim()}</p>`;
+                }
+            });
+            summaryHTML += '</div>';
+            
+            return summaryHTML;
+        }
+        
+        // 分类显示推荐内容
+        function displayRecommendationsByCategory(recommendations, nextSteps) {
+            const recommendationsHTML = `
+                <div class="recommendations-section">
+                    <div class="recommendation-category">
+                        <h4><i class="fas fa-lightbulb"></i> 专业建议</h4>
+                        <div class="recommendation-list">
+                            ${recommendations.map(rec => 
+                                `<div class="recommendation-item">
+                                    <i class="fas fa-star"></i>
+                                    <span>${rec.replace(/^\d+\.\s*/, '')}</span>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="recommendation-category">
+                        <h4><i class="fas fa-tasks"></i> 行动计划</h4>
+                        <div class="action-steps">
+                            ${nextSteps.map(step => 
+                                `<div class="action-step">
+                                    <span class="step-number">${step.match(/^\d+/)[0]}</span>
+                                    <span class="step-content">${step.replace(/^\d+\.\s*/, '')}</span>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return recommendationsHTML;
+        }
+        
+        // 更新AI推荐显示函数
+        function updateAIRecommendationsDisplay(userProfile, aiSummary, aiRecommendations, nextSteps) {
+            // 显示用户画像（直接显示原始文本格式）
+            document.getElementById('user-profile').textContent = userProfile;
+            
+            // 显示格式化的AI总结
+            document.getElementById('ai-summary-text').innerHTML = formatAISummary(aiSummary);
+            
+            // 显示分类的推荐内容
+            document.getElementById('ai-recommendations').innerHTML = displayRecommendationsByCategory(aiRecommendations, nextSteps);
+            
+            // 显示内容并隐藏加载状态
+            document.getElementById('ai-recommendation-loading').style.display = 'none';
+            document.getElementById('ai-recommendation-content').style.display = 'block';
         }
 
         // 生成AI总结和推荐
@@ -442,8 +720,7 @@
             userProfile += "- 希望了解专业选择和就业前景\n";
             userProfile += "- 关注专升本相关政策和要求\n";
             
-            // 显示用户画像
-            document.getElementById('user-profile').textContent = userProfile;
+         
             
             // 调用API进行性格和兴趣分析
             // 构建API请求
@@ -456,7 +733,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', 
-                    'Authorization': 'Bearer sk-37ae9c5a66764abca05c91e142157daa'
+                    'Authorization': 'Bearer sk-f4272a6f46524f5e8b21268c0fa287aa'
                 }, 
                 body: JSON.stringify({
                     model: 'deepseek-chat', 
@@ -498,37 +775,9 @@
                 // 推荐和下一步行动可以根据实际API响应格式进行解析
             }
             
-            // 显示AI总结
-            document.getElementById('ai-summary-text').textContent = aiSummary;
+            // 使用新的规范化显示函数
+            updateAIRecommendationsDisplay(userProfile, aiSummary, aiRecommendations, nextSteps);
             
-            // 显示推荐
-            const recommendationsContainer = document.getElementById('ai-recommendations');
-            recommendationsContainer.innerHTML = '';
-            aiRecommendations.forEach(rec => {
-                const p = document.createElement('p');
-                // 如果是包含HTML标签的推荐（如加粗文本），使用innerHTML
-                if (rec.includes("<strong>")) {
-                    p.innerHTML = rec;
-                } else {
-                    p.textContent = rec;
-                }
-                p.style.marginBottom = '10px';
-                recommendationsContainer.appendChild(p);
-            });
-            
-            // 显示下一步行动
-            const nextStepsContainer = document.getElementById('ai-next-steps');
-            nextStepsContainer.innerHTML = '';
-            nextSteps.forEach(step => {
-                const li = document.createElement('li');
-                li.textContent = step;
-                li.style.marginBottom = '8px';
-                nextStepsContainer.appendChild(li);
-            });
-            
-            // 显示内容并隐藏加载状态
-            document.getElementById('ai-recommendation-loading').style.display = 'none';
-            document.getElementById('ai-recommendation-content').style.display = 'block';
         } catch (error) {
             console.error('生成AI总结和推荐时出错:', error);
             document.getElementById('ai-recommendation-loading').innerHTML = 
@@ -565,8 +814,8 @@
                     
                     detailsContainer.innerHTML = tempDiv.innerHTML;
                 } catch (e) {
-                    // 如果处理失败，以纯文本形式显示
-                    detailsContainer.textContent = params.details;
+                    // 如果处理失败，仍然尝试使用innerHTML显示
+                    detailsContainer.innerHTML = params.details;
                 }
                 
                 // 生成AI总结和推荐
@@ -589,3 +838,5 @@
     </script>
 </body>
 </html>
+
+       
