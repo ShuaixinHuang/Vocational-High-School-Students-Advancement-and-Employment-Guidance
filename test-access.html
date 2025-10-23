@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统访问测试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">系统访问测试</h1>
+        
+        <div class="mb-6">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">问题排查</h2>
+            <p class="text-gray-600 mb-4">
+                我们已经修复了onboarding.html和index.html之间的跳转逻辑，解决了循环跳转问题。
+                现在让我们清除浏览器缓存并测试整个流程。
+            </p>
+            
+            <div class="mb-6">
+                <h3 class="font-medium text-gray-700 mb-2">当前缓存状态：</h3>
+                <div id="storage-status" class="p-3 bg-gray-100 rounded border border-gray-200 min-h-[100px]">
+                    加载中...
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 gap-4">
+                <button id="clear-storage" class="py-3 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors">
+                    <i class="fa fa-trash mr-2"></i>清除所有缓存数据
+                </button>
+                
+                <button id="test-onboarding" class="py-3 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                    <i class="fa fa-file-text-o mr-2"></i>测试协议页面
+                </button>
+                
+                <button id="test-index" class="py-3 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors">
+                    <i class="fa fa-home mr-2"></i>测试主页访问
+                </button>
+                
+                <button id="force-onboarding" class="py-3 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600 transition-colors">
+                    <i class="fa fa-refresh mr-2"></i>重置并重新开始流程
+                </button>
+            </div>
+        </div>
+        
+        <div class="bg-blue-50 p-4 rounded-lg">
+            <h3 class="font-medium text-blue-800 mb-2">操作说明：</h3>
+            <ol class="list-decimal list-inside text-blue-700 space-y-1 text-sm">
+                <li>点击「清除所有缓存数据」</li>
+                <li>点击「测试主页访问」</li>
+                <li>系统应自动跳转到协议页面</li>
+                <li>完成协议表单并点击「完成并进入系统」</li>
+                <li>系统应成功跳转到主页面</li>
+            </ol>
+        </div>
+    </div>
+    
+    <script>
+        // 显示当前localStorage状态
+        function updateStorageStatus() {
+            const statusDiv = document.getElementById('storage-status');
+            let status = '';
+            
+            status += `<p><strong>permanentlySkipOnboarding:</strong> ${localStorage.getItem('permanentlySkipOnboarding') || '未设置'}</p>`;
+            status += `<p><strong>onboardingCompleted:</strong> ${localStorage.getItem('onboardingCompleted') || '未设置'}</p>`;
+            status += `<p><strong>privacyAccepted:</strong> ${localStorage.getItem('privacyAccepted') || '未设置'}</p>`;
+            status += `<p><strong>hasVisited:</strong> ${localStorage.getItem('hasVisited') || '未设置'}</p>`;
+            
+            statusDiv.innerHTML = status;
+        }
+        
+        // 清除localStorage
+        document.getElementById('clear-storage').addEventListener('click', function() {
+            localStorage.clear();
+            alert('缓存已清除！');
+            updateStorageStatus();
+        });
+        
+        // 测试协议页面
+        document.getElementById('test-onboarding').addEventListener('click', function() {
+            window.location.href = 'onboarding.html';
+        });
+        
+        // 测试主页访问
+        document.getElementById('test-index').addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+        
+        // 重置并重新开始流程
+        document.getElementById('force-onboarding').addEventListener('click', function() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        });
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStorageStatus();
+        });
+    </script>
+</body>
+</html>

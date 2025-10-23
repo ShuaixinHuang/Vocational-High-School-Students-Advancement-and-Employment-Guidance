@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>自动跳转流程测试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-md p-6 max-w-md w-full">
+        <h2 class="text-xl font-bold text-center mb-4">自动跳转流程测试</h2>
+        <p class="text-gray-600 text-center mb-6">选择需要执行的操作</p>
+        <button id="clear-btn" class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/90 transition-colors mb-3">
+            清除所有数据并重置流程
+        </button>
+        <button id="reset-agreement-btn" class="w-full bg-primary/80 text-white py-2 px-4 rounded-md hover:bg-primary/70 transition-colors">
+            仅重置协议页面
+        </button>
+        <div id="status-message" class="mt-4 text-center text-sm hidden"></div>
+    </div>
+    
+    <script>
+        // 清除localStorage中的所有数据
+        function clearLocalStorage() {
+            // 保留主题设置
+            const savedTheme = localStorage.getItem('theme');
+            
+            // 清除所有数据
+            localStorage.clear();
+            
+            // 恢复主题设置
+            if (savedTheme) {
+                localStorage.setItem('theme', savedTheme);
+            }
+            
+            // 显示成功消息
+            const message = document.getElementById('status-message');
+            message.textContent = '数据已成功清除！将重新显示协议页面。';
+            message.className = 'mt-4 text-center text-sm text-green-600';
+            
+            // 延迟后返回首页
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+        
+        // 只清除引导完成标志（用于重新显示协议）
+        function resetAgreement() {
+            localStorage.removeItem('onboardingCompleted');
+            localStorage.removeItem('permanentlySkipOnboarding');
+            localStorage.removeItem('privacyAccepted');
+            
+            const message = document.getElementById('status-message');
+            message.textContent = '协议重置成功！现在将重新显示协议页面。';
+            message.className = 'mt-4 text-center text-sm text-green-600';
+            
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+        
+        // 添加按钮事件监听
+        document.getElementById('clear-btn').addEventListener('click', clearLocalStorage);
+        document.getElementById('reset-agreement-btn').addEventListener('click', resetAgreement);
+        
+    </script>
+</body>
+</html>

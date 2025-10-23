@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>专宝JOBO一对一职业教育升学智能顾问</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -24,6 +24,13 @@
     </style>
     
     <script>
+        // 修改为默认显示协议页面，除非用户已明确同意不再显示
+        // 添加一个新的标志来控制是否永久跳过协议页面
+        if (!localStorage.getItem('permanentlySkipOnboarding') || localStorage.getItem('permanentlySkipOnboarding') !== 'true') {
+            // 默认跳转到协议页面
+            window.location.href = 'onboarding.html';
+        }
+        
         tailwind.config = {
             theme: {
                 extend: {
@@ -95,14 +102,55 @@
             .ai-response strong {
                 font-weight: 600;
             }
+            
+            /* 加载状态指示器样式 */
+            .typing-indicator {
+                display: flex;
+                gap: 5px;
+                padding: 10px 0;
+            }
+            
+            .typing-dot {
+                width: 8px;
+                height: 8px;
+                background-color: #6c757d;
+                border-radius: 50%;
+                animation: typing-bounce 1.4s infinite ease-in-out both;
+            }
+            
+            .typing-dot:nth-child(1) {
+                animation-delay: -0.32s;
+            }
+            
+            .typing-dot:nth-child(2) {
+                animation-delay: -0.16s;
+            }
+            
+            @keyframes typing-bounce {
+                0%, 80%, 100% {
+                    transform: scale(0);
+                    opacity: 0.5;
+                }
+                40% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
        
-            /* 新增：优化中间聊天区域的滑动功能 */
+            /* 优化中间聊天区域的滑动功能 - 移动端适配 */
             .chat-container {
-                height: calc(100vh - 200px);
-                min-height: 400px;
+                min-height: 300px;
+                height: 100%;
                 display: flex;
                 flex-direction: column;
                 overflow: hidden; /* 防止整个容器滚动 */
+                position: relative;
+            }
+
+            @media (max-width: 768px) {
+                .chat-container {
+                    height: 100%;
+                }
             }
 
             .chat-history-scroll {
@@ -112,6 +160,14 @@
                 flex: 1; /* 占据剩余空间 */
                 min-height: 0; /* 允许收缩 */
                 scroll-behavior: smooth;
+                padding-bottom: 80px; /* 为底部输入框留出足够空间 */
+                max-height: 100%; /* 确保可以填满整个空间 */
+            }
+            
+            /* 输入区域样式优化 */
+            .sticky.bottom-0 {
+                box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.05);
+                padding-bottom: env(safe-area-inset-bottom, 8px); /* 适配移动设备底部安全区域 */
             }
 
             .chat-history-scroll::-webkit-scrollbar {
@@ -131,104 +187,283 @@
             .chat-history-scroll::-webkit-scrollbar-thumb:hover {
                 background: #94a3b8;
             }
+            
+            /* 移动端菜单动画 */
+            .mobile-menu-enter {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            
+            .mobile-menu-enter-active {
+                transform: translateX(0);
+                opacity: 1;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
+            
+            .mobile-menu-exit {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            
+            .mobile-menu-exit-active {
+                transform: translateX(-100%);
+                opacity: 0;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
         }
     </style>
 </head>
 <body class="font-inter bg-gray-50 text-dark min-h-screen flex flex-col">
-    <!-- 顶部导航栏 -->
+    <!-- 顶部导航栏 - 移动端适配 -->
     <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300" id="navbar">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="bg-primary text-white p-2 rounded-lg">
-                    <img src="1111.png" alt="图标" class="h-12 w-12"> <!-- 放大图片 -->
+            <!-- 移动端菜单按钮 -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors">
+                <i class="fa fa-bars text-gray-600 text-xl"></i>
+            </button>
+            
+            <div class="flex items-center space-x-2 flex-1 md:flex-initial">
+                <div class="bg-primary text-white p-1 rounded-lg md:p-2">
+                    <img src="1111.png" alt="专宝JOBO智能顾问" loading="lazy" class="h-8 w-8 md:h-12 md:w-12"> <!-- 响应式图片大小 -->
                 </div>
-                <h1 class="text-xl md:text-2xl font-bold text-primary">专宝JOBO一对一职业教育升学智能顾问</h1>
-                <img src="2222.png" alt="装饰图片" class="h-16 w-18 ml-2"> <!-- 添加的图片 -->
+                <h1 class="text-sm md:text-xl lg:text-2xl font-bold text-primary truncate">专宝JOBO一对一职业教育升学智能顾问</h1>
             </div>
-            <div class="flex items-center space-x-4">
-                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+            
+            <div class="flex items-center space-x-2 md:space-x-4">
+                <button id="theme-toggle" class="p-1.5 rounded-full hover:bg-gray-100 transition-colors">
                     <i class="fa fa-moon-o text-gray-600"></i>
                 </button>
-                <button id="settings-btn" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-                    <i class="fa fa-cog text-gray-600"></i>
-                </button>
-                <button id="model-status" class="p-2 rounded-full bg-green-100 text-green-600 transition-colors">
+                <button id="model-status" class="p-1.5 rounded-full bg-green-100 text-green-600 transition-colors">
                     <i class="fa fa-link"></i>
                 </button>
-                <button id="generate-report" class="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                <button id="generate-report" class="p-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
                     <i class="fa fa-file-pdf-o"></i>
+                </button>
+                <button id="settings-btn" class="hidden md:block p-1.5 rounded-full hover:bg-gray-100 transition-colors">
+                    <i class="fa fa-cog text-gray-600"></i>
                 </button>
             </div>
         </div>
     </header>
-
-    <!-- 隐私协议和初始问候弹窗 -->
-    <div id="welcome-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 transform transition-all">
-            <div class="text-center mb-4">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
-                    <i class="fa fa-user-circle text-3xl"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-2">您好！我是您的专宝JOBO专属生涯规划顾问</h3>
-                <p class="text-gray-600">很高兴认识您！为了能为您提供更精准的建议，我需要先了解一些基本信息。</p>
-            </div>
-            
-            <div class="bg-gray-50 p-4 rounded-lg mb-6 text-sm">
-                <p class="mb-2"><strong>隐私协议</strong></p>
-                <p class="mb-2">我们承诺保护您的隐私，收集的信息仅用于为您提供更好的服务，不会用于其他用途。您可以随时撤回授权。</p>
-                <button id="view-privacy" class="text-primary hover:underline flex items-center">
-                    <i class="fa fa-file-text-o mr-1"></i> 点击查看隐私文件
+    
+    <!-- 移动端侧边菜单 -->
+    <div id="mobile-menu" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        <div class="flex flex-col h-full">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-primary">菜单</h2>
+                <button id="close-mobile-menu" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i class="fa fa-times text-gray-600"></i>
                 </button>
             </div>
+            <div class="overflow-y-auto flex-grow p-4">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm p-4">
+                        <h3 class="text-base font-semibold mb-3 flex items-center">
+                            <i class="fa fa-list-ul text-primary mr-2"></i>
+                            咨询类别
+                        </h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="study-path.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fa fa-graduation-cap text-primary mr-2"></i>
+                                升学途径
+                            </a></li>
+                            <li><a href="college-selection.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fa fa-building text-primary mr-2"></i>
+                                院校选择
+                            </a></li>
+                            <li><a href="major-introduction.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fa fa-book text-primary mr-2"></i>
+                                专业介绍
+                            </a></li>
+                            <li><a href="certificate-exam.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fa fa-certificate text-primary mr-2"></i>
+                                证书考试
+                            </a></li>
+                            <li><a href="employment-prospects.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fa fa-briefcase text-primary mr-2"></i>
+                                就业前景
+                            </a></li>
+                            </ul>
+                        </div>
+
+                    <div class="bg-white rounded-xl shadow-sm p-4">
+                        <h3 class="text-base font-semibold mb-3 flex items-center">
+                            <i class="fa fa-info-circle text-primary mr-2"></i>
+                            <a href="enrollment-data.html" class="hover:text-primary transition-colors">升学数据</a>
+                        </h3>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span>职业教育升学率</span>
+                                    <span class="font-semibold">68.5%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 68.5%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span>热门专业就业率</span>
+                                    <span class="font-semibold">89.2%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                    <div class="bg-secondary h-1.5 rounded-full" style="width: 89.2%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span>技能证书认可度</span>
+                                    <span class="font-semibold">92.3%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                    <div class="bg-accent h-1.5 rounded-full" style="width: 92.3%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm p-4">
+                        <h3 class="text-base font-semibold mb-3 flex items-center">
+                            <i class="fa fa-lightbulb-o text-primary mr-2"></i>
+                            热门问题
+                        </h3>
+                        <ul class="space-y-2">
+                            <li class="text-xs">
+                                <a href="answer1.html" class="block p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    职业高中毕业生如何升入本科院校？
+                                </a></li>
+                            <li class="text-xs">
+                                <a href="answer2.html" class="block p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    哪些职业技能证书可以获得升学加分？
+                                </a></li>
+                            <li class="text-xs">
+                                <a href="answer3.html" class="block p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    专升本考试需要准备哪些科目？
+                                </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t">
+                <button id="settings-btn-mobile" class="w-full flex items-center justify-center p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <i class="fa fa-cog text-gray-600 mr-2"></i>
+                    <span>设置</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 半透明遮罩层 -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
+
+    <!-- 欢迎模态框已移除 -->
+
+    <!-- 隐私协议模态框 -->
+    <div id="privacy-modal" class="fixed inset-0 flex items-center justify-center z-50 bg-black/50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-xl font-bold text-dark mb-4">隐私协议与服务条款</h2>
             
-            <button id="accept-privacy" class="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium">
-                我已了解并同意
-            </button>
+            <div class="h-80 overflow-y-auto p-4 border border-gray-200 rounded-lg mb-6 bg-gray-50">
+                <div class="text-sm text-gray-700 space-y-4">
+                    <h3 class="font-semibold text-dark">隐私政策</h3>
+                    <p>欢迎使用专宝JOBO一对一职业教育升学智能顾问服务（以下简称"本服务"）。在您使用本服务前，请仔细阅读并了解本隐私政策的全部内容。</p>
+                    
+                    <h4 class="font-semibold">1. 信息收集与使用</h4>
+                    <p>我们收集的信息可能包括但不限于您的姓名、联系方式、教育背景、学习成绩等个人信息。这些信息将用于为您提供个性化的咨询服务、生成相关报告和分析结果。</p>
+                    
+                    <h4 class="font-semibold">2. 信息保护</h4>
+                    <p>我们重视您的个人信息安全，采取严格的安全措施保护您的信息不被未经授权的访问、使用或披露。</p>
+                    
+                    <h4 class="font-semibold">3. 信息共享</h4>
+                    <p>未经您的明确同意，我们不会向任何第三方共享您的个人信息，但法律法规要求的除外。</p>
+                    
+                    <h3 class="font-semibold text-dark mt-6">服务条款</h3>
+                    <p>使用本服务，即表示您同意遵守以下服务条款：</p>
+                    
+                    <h4 class="font-semibold">1. 服务内容</h4>
+                    <p>本服务提供职业教育升学相关的咨询、指导和信息查询服务。我们不保证所有信息的绝对准确性，建议您在做出决策前进行多方核实。</p>
+                    
+                    <h4 class="font-semibold">2. 用户行为</h4>
+                    <p>您在使用本服务时应遵守法律法规，不得利用本服务进行任何违法或不当行为。</p>
+                    
+                    <h4 class="font-semibold">3. 知识产权</h4>
+                    <p>本服务包含的所有内容，包括但不限于文字、图片、数据等，均受知识产权保护。未经授权，不得复制、传播或用于其他用途。</p>
+                    
+                    <h4 class="font-semibold">4. 服务变更</h4>
+                    <p>我们有权根据需要变更服务内容或终止部分服务，如有重大变更将及时通知您。</p>
+                </div>
+            </div>
+            
+            <!-- 优化电脑端复选框和标签的交互区域 -->
+            <div class="flex items-center mb-8">
+                <input type="checkbox" id="accept-privacy" class="w-6 h-6 text-primary rounded mr-3 focus:ring-primary">
+                <label for="accept-privacy" class="text-base text-gray-700 cursor-pointer" style="user-select: none; min-height: 24px; display: flex; align-items: center;">
+                    我已阅读并同意隐私政策和服务条款
+                </label>
+            </div>
+            
+            <!-- 优化按钮尺寸和间距，增大点击区域 -->
+            <div class="flex justify-center">
+                <button id="accept-privacy-btn" class="w-full py-4 px-6 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-all" disabled style="min-height: 48px; font-size: 16px;">
+                    同意并继续
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- 隐私协议详情模态框 -->
-    <div id="privacy-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-xl shadow-lg w-full max-w-2xl p-6 transform transition-all max-h-[90vh] overflow-auto">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">隐私保护协议</h3>
-                <button id="close-privacy" class="text-gray-500 hover:text-gray-700">
-                    <i class="fa fa-times"></i>
-                </button>
-            </div>
+    <!-- 信息收集模态框 -->
+    <div id="info-collection-modal" class="fixed inset-0 flex items-center justify-center z-50 bg-black/50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <h2 class="text-xl font-bold text-dark mb-4">基本信息收集</h2>
+            <p class="text-gray-600 mb-6">为了更好地为您提供个性化服务，请填写以下基本信息：</p>
             
-            <div class="space-y-4 text-sm">
+            <form id="info-collection-form" class="space-y-4">
                 <div>
-                    <h4 class="font-semibold text-lg mb-2">1. 信息收集与使用</h4>
-                    <p>我们仅收集您自愿提供的个人信息，包括但不限于姓名、教育背景、职业规划需求等。这些信息仅用于为您提供个性化的职业教育升学咨询服务，帮助我们更好地理解您的需求并提供精准建议。</p>
+                    <label for="collect-student-name" class="block text-sm font-medium text-gray-700 mb-1">姓名（选填）</label>
+                    <input type="text" id="collect-student-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="请输入您的姓名">
                 </div>
                 
                 <div>
-                    <h4 class="font-semibold text-lg mb-2">2. 信息保护</h4>
-                    <p>我们采用严格的技术和管理措施保护您的个人信息安全，防止信息被未经授权的访问、使用或泄露。我们的员工必须遵守严格的隐私政策，仅在必要范围内访问您的信息。</p>
+                    <label for="collect-education-level" class="block text-sm font-medium text-gray-700 mb-1">教育阶段</label>
+                    <select id="collect-education-level" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        <option value="">请选择教育阶段</option>
+                        <option value="junior-high">初中阶段</option>
+                        <option value="senior-high">高中阶段</option>
+                        <option value="vocational-high">职高阶段</option>
+                        <option value="other">其他</option>
+                    </select>
                 </div>
                 
                 <div>
-                    <h4 class="font-semibold text-lg mb-2">3. 信息共享</h4>
-                    <p>我们不会将您的个人信息出售、出租或与第三方共享，除非获得您的明确许可，或法律要求我们这样做。在提供服务过程中，可能会与必要的服务提供商共享信息，但这些提供商必须遵守我们的隐私保护标准。</p>
+                    <label for="collect-interest-major" class="block text-sm font-medium text-gray-700 mb-1">感兴趣的专业领域（选填）</label>
+                    <select id="collect-interest-major" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        <option value="">请选择感兴趣的专业领域</option>
+                        <option value="it">信息技术</option>
+                        <option value="medical">医学健康</option>
+                        <option value="business">商业管理</option>
+                        <option value="art">艺术设计</option>
+                        <option value="engineering">工程技术</option>
+                        <option value="education">教育师范</option>
+                        <option value="other">其他</option>
+                    </select>
                 </div>
                 
                 <div>
-                    <h4 class="font-semibold text-lg mb-2">4. 您的权利</h4>
-                    <p>您有权随时查看、更正或要求删除您的个人信息。您也可以随时撤回对信息收集和使用的授权，只需联系我们的客服团队即可。</p>
+                    <label for="collect-goal" class="block text-sm font-medium text-gray-700 mb-1">升学目标（选填）</label>
+                    <select id="collect-goal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        <option value="">请选择升学目标</option>
+                        <option value="college">专科院校</option>
+                        <option value="university">本科院校</option>
+                        <option value="vocational">职业院校</option>
+                        <option value="technical">技术学院</option>
+                        <option value="other">其他</option>
+                    </select>
                 </div>
                 
-                <div>
-                    <h4 class="font-semibold text-lg mb-2">5. 协议更新</h4>
-                    <p>本隐私协议可能会不时更新，任何更新都会在网站上发布。我们建议您定期查看本协议，了解我们如何保护您的信息。</p>
-                </div>
-            </div>
-            
-            <div class="mt-6">
-                <button id="accept-privacy-from-details" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors">
-                    我已阅读并同意
+                <button type="submit" class="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                    完成并进入
                 </button>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -247,79 +482,76 @@
             }
         </style>
     </head>
-    <!-- 主要内容区域 -->
-    <main class="flex-grow container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
-        <!-- 左侧导航面板 -->
-        <aside class="hidden md:block w-64 space-y-6">
-            <div class="bg-white rounded-xl shadow-sm p-5">
-                <h2 class="text-lg font-semibold mb-4 flex items-center">
+    <!-- 主要内容区域 - 移动端适配 -->
+    <main class="flex-grow container mx-auto px-4 py-4 md:py-6 flex flex-col md:flex-row gap-4 md:gap-6 min-h-screen" style="align-items: stretch;">
+        <!-- 左侧导航面板 - 移动端隐藏 -->
+        <aside class="hidden md:block w-52 lg:w-60 space-y-4 flex-shrink-0">
+            <div class="bg-white rounded-xl shadow-sm p-3">
+                <h2 class="text-base font-semibold mb-2 flex items-center">
                     <i class="fa fa-list-ul text-primary mr-2"></i>
                     咨询类别
                 </h2>
-                <ul class="space-y-2">
-                    <li><a href="study-path.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                <ul class="space-y-1">
+                    <li><a href="study-path.html" class="flex items-center p-1.5 rounded-lg hover:bg-gray-50 transition-colors text-sm">
                         <i class="fa fa-graduation-cap text-primary mr-2"></i>
                         升学途径
                     </a></li>
-                    <li><a href="college-selection.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                    <li><a href="college-selection.html" class="flex items-center p-1.5 rounded-lg hover:bg-gray-50 transition-colors text-sm">
                         <i class="fa fa-building text-primary mr-2"></i>
                         院校选择
                     </a></li>
-                    <li><a href="major-introduction.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                    <li><a href="major-introduction.html" class="flex items-center p-1.5 rounded-lg hover:bg-gray-50 transition-colors text-sm">
                         <i class="fa fa-book text-primary mr-2"></i>
                         专业介绍
                     </a></li>
-                    <li><a href="certificate-exam.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                    <li><a href="certificate-exam.html" class="flex items-center p-1.5 rounded-lg hover:bg-gray-50 transition-colors text-sm">
                         <i class="fa fa-certificate text-primary mr-2"></i>
                         证书考试
                     </a></li>
-                    <li><a href="employment-prospects.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                    <li><a href="employment-prospects.html" class="flex items-center p-1.5 rounded-lg hover:bg-gray-50 transition-colors text-sm">
                         <i class="fa fa-briefcase text-primary mr-2"></i>
                         就业前景
                     </a></li>
-                    <li><a href="enrollment-data.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                        <i class="fa fa-bar-chart text-primary mr-2"></i>
-                        升学数据
-                    </a></li>
+
                 </ul>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm p-5">
-                <h2 class="text-lg font-semibold mb-4 flex items-center">
+            <div class="bg-white rounded-xl shadow-sm p-3">
+                <h2 class="text-base font-semibold mb-2 flex items-center">
                     <i class="fa fa-info-circle text-primary mr-2"></i>
                     <a href="enrollment-data.html" class="hover:text-primary transition-colors">升学数据</a>
                 </h2>
-                <div class="space-y-4">
+                <div class="space-y-3">
                     <div>
-                        <div class="flex justify-between text-sm mb-1">
+                        <div class="flex justify-between text-xs mb-1">
                             <span>职业教育升学率</span>
                             <span class="font-semibold">68.5%</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-primary h-2 rounded-full" style="width: 68.5%"></div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                            <div class="bg-primary h-1.5 rounded-full" style="width: 68.5%"></div>
                         </div>
                     </div>
                     <div>
-                        <div class="flex justify-between text-sm mb-1">
+                        <div class="flex justify-between text-xs mb-1">
                             <span>热门专业就业率</span>
                             <span class="font-semibold">89.2%</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-secondary h-2 rounded-full" style="width: 89.2%"></div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                            <div class="bg-secondary h-1.5 rounded-full" style="width: 89.2%"></div>
                         </div>
                     </div>
                     <div>
-                        <div class="flex justify-between text-sm mb-1">
+                        <div class="flex justify-between text-xs mb-1">
                             <span>技能证书认可度</span>
                             <span class="font-semibold">92.3%</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-accent h-2 rounded-full" style="width: 92.3%"></div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                            <div class="bg-accent h-1.5 rounded-full" style="width: 92.3%"></div>
                         </div>
                     </div>
                 </div>
-                <div class="mt-4 text-center">
-                    <a href="enrollment-data.html" class="text-primary hover:text-primary/80 text-sm font-medium flex items-center justify-center">
+                <div class="mt-3 text-center">
+                    <a href="enrollment-data.html" class="text-primary hover:text-primary/80 text-xs font-medium flex items-center justify-center">
                         查看详细数据 <i class="fa fa-arrow-right ml-1 text-xs"></i>
                     </a>
                 </div>
@@ -330,11 +562,11 @@
         </aside>
 
         <!-- 中间聊天区域 -->
-        <section class="flex-grow flex flex-col">
-            <div class="bg-white rounded-xl shadow-sm p-6 flex-grow flex flex-col chat-container">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold mb-2">专宝JOBO智能咨询助手</h2>
-                    <p class="text-gray-600">我是您的专宝JOBO智能咨询助手，专注于职业教育升学咨询。请问有什么可以帮助您？</p>
+        <section class="flex-grow flex flex-col" style="max-height: calc(100vh - 180px);">
+            <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 h-full flex flex-col chat-container">
+                <div class="mb-4 md:mb-6">
+                    <h2 class="text-xl md:text-2xl font-bold mb-2">专宝JOBO智能咨询助手</h2>
+                    <p class="text-gray-600 text-sm md:text-base">我是您的专宝JOBO智能咨询助手，专注于职业教育升学咨询。请问有什么可以帮助您？</p>
                 </div>
                 
                 <!-- 聊天历史区域 -->
@@ -342,78 +574,84 @@
                     <!-- 欢迎消息将在用户同意隐私协议后显示 -->
                 </div>
                 
-                <!-- 输入区域 -->
-                <div class="relative">
-                    <form id="chat-form" class="flex items-center space-x-3">
-                        <input type="text" id="user-input" placeholder="请输入您的问题..." 
-                            class="flex-grow px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" disabled>
-                        <button type="submit" class="bg-gray-300 text-gray-500 p-3 rounded-xl cursor-not-allowed" disabled>
+                <!-- 输入区域 - 固定在底部 -->
+                <div class="sticky bottom-0 bg-white pt-4 pb-2 z-10">
+                    <form id="chat-form" class="flex items-center space-x-2">
+                        <div class="relative flex-grow">
+                            <select id="mode-select" class="absolute left-0 top-0 h-full py-3 px-3 rounded-l-xl border-r-0 border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all z-10">
+                                <option value="normal">普通模式</option>
+                                <option value="academician">院士模式</option>
+                            </select>
+                            <input type="text" id="user-input" placeholder="请输入您的问题..." 
+                                class="w-full pl-28 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm">
+                        </div>
+                        <button type="submit" class="bg-primary text-white p-3 rounded-xl">
                             <i class="fa fa-paper-plane"></i>
                         </button>
                     </form>
-                    <div id="voice-input" class="absolute right-20 top-1/2 -translate-y-1/2 cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-colors" disabled>
+                    <div id="voice-input" class="absolute right-16 top-1/2 -translate-y-1/2 cursor-pointer p-1.5 rounded-full hover:bg-gray-100 transition-colors" disabled>
                         <i class="fa fa-microphone text-gray-400"></i>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 右侧信息面板 -->
-        <aside class="hidden lg:block w-80 space-y-6">
-            <div class="bg-white rounded-xl shadow-sm p-5">
-                <h2 class="text-lg font-semibold mb-4 flex items-center">
+        <!-- 右侧信息面板 - 移动端隐藏 -->
+        <aside class="hidden lg:block w-52 lg:w-60 space-y-4 flex-shrink-0">
+            <div class="bg-white rounded-xl shadow-sm p-3">
+                <h2 class="text-base font-semibold mb-2 flex items-center">
                     <i class="fa fa-lightbulb-o text-primary mr-2"></i>
                     热门问题
                 </h2>
-                <ul class="space-y-3">
+                <ul class="space-y-2">
                     <li class="text-sm">
-                        <a href="answer1.html" class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <a href="answer1.html" class="block p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                             职业高中毕业生如何升入本科院校？
                         </a></li>
                     <li class="text-sm">
-                        <a href="answer2.html" class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <a href="answer2.html" class="block p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                             哪些职业技能证书可以获得升学加分？
                         </a></li>
                     <li class="text-sm">
-                        <a href="answer3.html" class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <a href="answer3.html" class="block p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                             专升本考试需要准备哪些科目？
                         </a></li>
                 </ul>
             </div>
             
-            <div class="bg-white rounded-xl shadow-sm p-5">
+            <div class="bg-white rounded-xl shadow-sm p-3">
                 <a href="timeline.html" class="block">
-                    <h2 class="text-lg font-semibold mb-4 flex items-center">
+                    <h2 class="text-base font-semibold mb-2 flex items-center">
                         <i class="fa fa-calendar text-primary mr-2"></i>
                         重要时间节点
                     </h2>
-                    <ul class="space-y-3 text-sm">
+                    <ul class="space-y-2 text-sm">
                         <li class="flex items-start">
-                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">6月</div>
+                            <div class="bg-primary/10 text-primary text-sm font-semibold px-1.5 py-0.5 rounded mr-1.5 mt-0.25">6月</div>
                             <div>
                                 <p class="font-medium">职业技能考试</p>
-                                <p class="text-gray-500">6月15日-20日</p>
+                                <p class="text-gray-500 text-sm">6月15日-20日</p>
                             </div>
                         </li>
                         <li class="flex items-start">
-                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">7月</div>
+                            <div class="bg-primary/10 text-primary text-sm font-semibold px-1.5 py-0.5 rounded mr-1.5 mt-0.25">7月</div>
                             <div>
                                 <p class="font-medium">专升本报名</p>
-                                <p class="text-gray-500">7月1日-15日</p>
+                                <p class="text-gray-500 text-sm">7月1日-15日</p>
                             </div>
                         </li>
                         <li class="flex items-start">
-                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">8月</div>
+                            <div class="bg-primary/10 text-primary text-sm font-semibold px-1.5 py-0.5 rounded mr-1.5 mt-0.25">8月</div>
                             <div>
                                 <p class="font-medium">升学考试</p>
-                                <p class="text-gray-500">8月20日-25日</p>
+                                <p class="text-gray-500 text-sm">8月20日-25日</p>
                             </div>
                         </li>
                         <li class="flex items-start">
-                            <div class="bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mr-2 mt-0.5">9月</div>
+                            <div class="bg-primary/10 text-primary text-sm font-semibold px-1.5 py-0.5 rounded mr-1.5 mt-0.25">9月</div>
                             <div>
                                 <p class="font-medium">录取结果公布</p>
-                                <p class="text-gray-500">9月10日起</p>
+                                <p class="text-gray-500 text-sm">9月10日起</p>
                             </div>
                         </li>
                     </ul>
@@ -422,27 +660,27 @@
         </aside>
     </main>
 
-    <!-- 报告生成模态框 -->
+    <!-- 报告生成模态框 - 移动端优化 -->
     <div id="report-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 transform transition-all">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-4 md:p-6 transform transition-all max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">生成咨询报告</h3>
+                <h3 class="text-lg md:text-xl font-bold">生成咨询报告</h3>
                 <button id="close-report-modal" class="text-gray-500 hover:text-gray-700">
                     <i class="fa fa-times"></i>
                 </button>
             </div>
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">学生姓名</label>
-                    <input type="text" id="student-name" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="请输入学生姓名">
+                    <input type="text" id="student-name" class="w-full p-2 border border-gray-300 rounded-lg text-sm" placeholder="请输入学生姓名">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">报告标题</label>
-                    <input type="text" id="report-title" class="w-full p-2 border border-gray-300 rounded-lg" value="职业教育升学咨询报告">
+                    <input type="text" id="report-title" class="w-full p-2 border border-gray-300 rounded-lg text-sm" value="职业教育升学咨询报告">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">咨询类别</label>
-                    <select id="consultation-type" class="w-full p-2 border border-gray-300 rounded-lg">
+                    <select id="consultation-type" class="w-full p-2 border border-gray-300 rounded-lg text-sm">
                         <option value="综合咨询">综合咨询</option>
                         <option value="升学途径">升学途径</option>
                         <option value="院校选择">院校选择</option>
@@ -452,7 +690,7 @@
                     </select>
                 </div>
                 <div class="pt-2">
-                    <button id="generate-pdf" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                    <button id="generate-pdf" class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors">
                         生成PDF报告
                     </button>
                 </div>
@@ -498,6 +736,479 @@
     <script>
         // 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
+            // 统一的模态框切换函数 - 解决隐私协议重复显示问题
+            function switchModal(fromModal, toModal, callback) {
+                // 使用局部变量而非全局变量
+                if (this._modalTransitionInProgress) return;
+                
+                this._modalTransitionInProgress = true;
+                console.log('切换模态框:', fromModal?.id, '->', toModal?.id);
+                
+                // 隐藏来源模态框
+                if (fromModal) {
+                    fromModal.classList.add('hidden');
+                    fromModal.style.display = 'none';
+                    fromModal.style.zIndex = '0';
+                }
+                
+                // 显示目标模态框
+                if (toModal) {
+                    toModal.classList.remove('hidden');
+                    toModal.style.display = 'flex';
+                    toModal.style.zIndex = '9999';
+                    toModal.style.position = 'fixed';
+                    toModal.style.inset = '0';
+                }
+                
+                // 执行回调
+                if (callback && typeof callback === 'function') {
+                    callback();
+                }
+                
+                // 300ms后重置状态
+                setTimeout(() => {
+                    this._modalTransitionInProgress = false;
+                }, 300);
+            }
+            
+            // 重置模态框状态标志
+            switchModal._modalTransitionInProgress = false;
+            // 移除了重复的全局点击事件监听器，避免模态框显示两次
+            
+            // 检查模态框结构
+            setTimeout(function() {
+                console.log('隐私模态框初始状态:', document.getElementById('privacy-modal'));
+                
+                // 添加键盘事件支持，但修改为只在明确聚焦时才响应
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        // 检查是否有特定元素被聚焦，避免意外触发
+                        const activeElement = document.activeElement;
+                        if (activeElement === document.getElementById('accept-privacy-btn')) {
+                            console.log('检测到Enter键按下，尝试切换模态框');
+                            // 让按钮自己处理点击事件
+                        } else {
+                            // 忽略Enter键，避免重复触发模态框切换
+                            return;
+                        }
+                    }
+                });
+                
+                // 添加简单的自动测试函数，用于开发调试
+                window.testModalFlow = function() {
+                    console.log('执行模态框流程测试');
+                    setTimeout(() => {
+                        const event = new KeyboardEvent('keydown', { key: 'Enter' });
+                        document.dispatchEvent(event);
+                    }, 1000);
+                };
+            }, 500);
+            
+            // 获取模态框元素
+            const privacyModal = document.getElementById('privacy-modal');
+            const infoCollectionModal = document.getElementById('info-collection-modal');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            
+            // 获取按钮元素
+            const backToWelcomeBtn = document.getElementById('back-to-welcome-btn');
+            const acceptPrivacyBtn = document.getElementById('accept-privacy-btn');
+            const acceptPrivacyCheckbox = document.getElementById('accept-privacy');
+            
+            // 获取信息收集表单
+            const infoCollectionForm = document.getElementById('info-collection-form');
+            
+            // 移动端菜单相关
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const settingsBtnMobile = document.getElementById('settings-btn-mobile');
+            const settingsBtn = document.getElementById('settings-btn');
+            
+            // 检查用户是否已经接受隐私协议
+            const hasAcceptedPrivacy = localStorage.getItem('privacyAccepted') === 'true';
+            
+            // 默认禁用聊天输入
+            if (chatInput) {
+                chatInput.disabled = !hasAcceptedPrivacy;
+            }
+            
+            // 如果用户未接受隐私协议，显示隐私协议模态框
+            if (privacyModal && !hasAcceptedPrivacy) {
+                privacyModal.classList.remove('hidden');
+                privacyModal.style.zIndex = '9999';
+                privacyModal.style.display = 'flex';
+                privacyModal.style.position = 'fixed';
+                privacyModal.style.inset = '0';
+            } else {
+                // 隐藏模态框
+                if (privacyModal) privacyModal.classList.add('hidden');
+                if (infoCollectionModal) infoCollectionModal.classList.add('hidden');
+            }
+            
+            // 欢迎模态框 -> 隐私协议模态框 - 使用统一的switchModal函数
+            try {
+                const showPrivacyBtn = document.getElementById('start-experience');
+                console.log('showPrivacyBtn元素:', showPrivacyBtn);
+                if (showPrivacyBtn) {
+                    console.log('开始体验按钮已找到，添加统一事件处理');
+                    
+                    // 确保按钮始终在最顶层且可点击
+                    showPrivacyBtn.style.pointerEvents = 'auto';
+                    showPrivacyBtn.style.cursor = 'pointer';
+                    showPrivacyBtn.style.zIndex = '10000';
+                    showPrivacyBtn.style.position = 'relative';
+                
+                // 移除所有现有的事件监听器（通过替换为新函数）
+                // 只保留一个事件监听器，避免重复触发
+                showPrivacyBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    switchModal(welcomeModal, privacyModal);
+                };
+                
+                // 添加键盘支持
+                showPrivacyBtn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        switchModal(welcomeModal, privacyModal);
+                    }
+                });
+            } else {
+                console.log('未找到showPrivacyBtn元素，将继续加载其他功能');
+            }
+            } catch (error) {
+                console.log('处理欢迎按钮时出错，将继续加载页面其他功能:', error);
+            }
+            
+            // 隐私协议模态框 -> 欢迎模态框
+            if (backToWelcomeBtn) {
+                backToWelcomeBtn.addEventListener('click', function() {
+                    if (privacyModal) privacyModal.classList.add('hidden');
+                    if (welcomeModal) welcomeModal.classList.remove('hidden');
+                });
+            }
+            
+            // 隐私协议复选框事件增强版 - 电脑端优化
+            if (acceptPrivacyCheckbox && acceptPrivacyBtn) {
+                console.log('隐私协议复选框和按钮已找到，添加增强事件处理 - 电脑端优化');
+                
+                // 确保复选框初始状态可见且可点击 - 电脑端优化
+                acceptPrivacyCheckbox.style.opacity = '1';
+                acceptPrivacyCheckbox.style.pointerEvents = 'auto';
+                acceptPrivacyCheckbox.style.cursor = 'pointer';
+                acceptPrivacyCheckbox.style.zIndex = '1000';
+                acceptPrivacyCheckbox.style.position = 'relative';
+                acceptPrivacyCheckbox.style.transform = 'scale(1.2)';
+                
+                // 确保标签也可点击
+                const privacyLabel = document.querySelector('label[for="accept-privacy"]');
+                if (privacyLabel) {
+                    privacyLabel.style.pointerEvents = 'auto';
+                    privacyLabel.style.cursor = 'pointer';
+                    privacyLabel.style.zIndex = '1001';
+                    privacyLabel.style.position = 'relative';
+                }
+                
+                // 确保同意按钮初始状态和视觉样式
+                acceptPrivacyBtn.style.opacity = acceptPrivacyCheckbox.checked ? '1' : '0.6';
+                acceptPrivacyBtn.style.cursor = acceptPrivacyCheckbox.checked ? 'pointer' : 'not-allowed';
+                acceptPrivacyBtn.style.pointerEvents = 'auto';
+                acceptPrivacyBtn.style.position = 'relative';
+                
+                // 三重事件监听确保兼容性
+                acceptPrivacyCheckbox.addEventListener('change', function() {
+                    console.log('复选框change事件触发，状态:', this.checked);
+                    acceptPrivacyBtn.disabled = !this.checked;
+                    acceptPrivacyBtn.style.opacity = this.checked ? '1' : '0.6';
+                    acceptPrivacyBtn.style.cursor = this.checked ? 'pointer' : 'not-allowed';
+                });
+                
+                // 添加click事件作为备选 - 电脑端优先
+                acceptPrivacyCheckbox.addEventListener('click', function(e) {
+                    console.log('复选框click事件触发 - 电脑端');
+                    e.stopPropagation();
+                    // 直接修改checked状态
+                    setTimeout(() => {
+                        const newState = !acceptPrivacyCheckbox.checked;
+                        acceptPrivacyCheckbox.checked = newState;
+                        // 手动触发change事件
+                        const changeEvent = new Event('change', { bubbles: true });
+                        acceptPrivacyCheckbox.dispatchEvent(changeEvent);
+                        console.log('电脑端点击后状态:', newState);
+                    }, 0);
+                });
+                
+                // 添加鼠标事件支持电脑端
+                acceptPrivacyCheckbox.addEventListener('mousedown', function(e) {
+                    console.log('复选框mousedown事件触发');
+                    e.preventDefault();
+                    // 延迟执行，确保不与click事件冲突
+                    setTimeout(() => {
+                        this.click();
+                    }, 10);
+                });
+                
+                // 添加鼠标悬停效果
+                acceptPrivacyCheckbox.addEventListener('mouseover', function() {
+                    this.style.transform = 'scale(1.3)';
+                    this.style.transition = 'transform 0.2s';
+                });
+                
+                acceptPrivacyCheckbox.addEventListener('mouseout', function() {
+                    this.style.transform = 'scale(1.2)';
+                });
+                
+                // 添加touchstart事件支持移动设备
+                acceptPrivacyCheckbox.addEventListener('touchstart', function(e) {
+                    console.log('复选框touchstart事件触发');
+                    e.preventDefault();
+                    this.click();
+                });
+            }
+            
+            // 接受隐私协议并继续 - 增强版 - 电脑端优化
+            if (acceptPrivacyBtn) {
+                console.log('同意按钮已找到，添加增强事件处理 - 电脑端优化');
+                
+                // 确保按钮始终可见且在顶层 - 电脑端优化
+                acceptPrivacyBtn.style.pointerEvents = 'auto';
+                acceptPrivacyBtn.style.zIndex = '1000';
+                acceptPrivacyBtn.style.position = 'relative';
+                acceptPrivacyBtn.style.outline = 'none';
+                acceptPrivacyBtn.style.userSelect = 'none';
+                acceptPrivacyBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                
+                // 添加鼠标悬停效果 - 电脑端
+                acceptPrivacyBtn.addEventListener('mouseover', function() {
+                    if (!this.disabled) {
+                        this.style.backgroundColor = '#0056b3';
+                        this.style.transform = 'translateY(-1px)';
+                        this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+                        this.style.transition = 'all 0.2s ease';
+                    }
+                });
+                
+                acceptPrivacyBtn.addEventListener('mouseout', function() {
+                    if (!this.disabled) {
+                        this.style.backgroundColor = '';
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                    }
+                });
+                
+                // 添加鼠标按下效果
+                acceptPrivacyBtn.addEventListener('mousedown', function() {
+                    if (!this.disabled) {
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+                    }
+                });
+                
+                acceptPrivacyBtn.addEventListener('mouseup', function() {
+                    if (!this.disabled) {
+                        this.style.transform = 'translateY(-1px)';
+                        this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+                    }
+                });
+                
+                // 添加click事件监听 - 增强版
+                acceptPrivacyBtn.addEventListener('click', function(e) {
+                    console.log('同意按钮点击事件触发 - 电脑端');
+                    e.stopPropagation();
+                    
+                    // 检查是否正在进行过渡，避免重复执行
+                    if (window._modalTransitionInProgress) {
+                        console.log('模态框切换正在进行中，忽略此次点击');
+                        return;
+                    }
+                    
+                    // 即使按钮显示为禁用状态，也要检查复选框的实际状态
+                    const checkbox = document.getElementById('accept-privacy');
+                    if (checkbox && checkbox.checked) {
+                        console.log('复选框已勾选，继续下一步');
+                        
+                        window._modalTransitionInProgress = true;
+                        
+                        // 保存到localStorage
+                        localStorage.setItem('privacyAccepted', 'true');
+                        
+                        // 隐藏隐私协议模态框，显示信息收集模态框
+                        if (privacyModal) {
+                            privacyModal.classList.add('hidden');
+                            privacyModal.style.display = 'none';
+                            privacyModal.style.zIndex = '0';
+                        }
+                        if (infoCollectionModal) {
+                            infoCollectionModal.classList.remove('hidden');
+                            infoCollectionModal.style.display = 'flex';
+                            infoCollectionModal.style.zIndex = '9999';
+                            // 确保信息收集模态框在最顶层
+                            infoCollectionModal.style.position = 'fixed';
+                            infoCollectionModal.style.inset = '0';
+                        }
+                        
+                        // 设置短暂延迟后重置过渡标志
+                        setTimeout(() => {
+                            window._modalTransitionInProgress = false;
+                        }, 300);
+                    } else {
+                        console.log('复选框未勾选，无法继续');
+                        // 如果未勾选，给用户提示
+                        alert('请先阅读并同意隐私协议和服务条款');
+                    }
+                });
+                
+                // 添加键盘支持 - 电脑端
+                acceptPrivacyBtn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        console.log('键盘事件触发同意按钮');
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+                
+                // 保留touchstart事件但移除this.click()调用，避免与click事件冲突
+                acceptPrivacyBtn.addEventListener('touchstart', function(e) {
+                    console.log('同意按钮touchstart事件触发');
+                    e.preventDefault();
+                    // 直接执行模态框切换逻辑，不再调用click()
+                    const checkbox = document.getElementById('accept-privacy');
+                    if (checkbox && checkbox.checked) {
+                        localStorage.setItem('privacyAccepted', 'true');
+                        if (privacyModal) {
+                            privacyModal.style.display = 'none';
+                            privacyModal.style.zIndex = '0';
+                        }
+                        if (infoCollectionModal) {
+                            infoCollectionModal.style.display = 'flex';
+                            infoCollectionModal.style.zIndex = '9999';
+                        }
+                    }
+                });
+                
+                // 移除了重复的全局捕获事件监听器，避免模态框显示两次
+            }
+            
+            // 信息收集表单提交
+            if (infoCollectionForm) {
+                infoCollectionForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // 收集表单数据
+                    const studentName = document.getElementById('collect-student-name').value;
+                    const educationLevel = document.getElementById('collect-education-level').value;
+                    const interestMajor = document.getElementById('collect-interest-major').value;
+                    const goal = document.getElementById('collect-goal').value;
+                    
+                    // 保存信息到localStorage
+                    const userInfo = {
+                        studentName,
+                        educationLevel,
+                        interestMajor,
+                        goal
+                    };
+                    localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                    
+                    // 确保隐私协议已被接受的状态保存
+                    localStorage.setItem('privacyAccepted', 'true');
+                    
+                    // 隐藏信息收集模态框
+                    if (infoCollectionModal) {
+                        infoCollectionModal.classList.add('hidden');
+                        infoCollectionModal.style.display = 'none';
+                        infoCollectionModal.style.zIndex = '0';
+                    }
+                    
+                    // 重新初始化聊天功能，启用输入框和按钮
+                    initializeChat();
+                });
+            }
+            
+            // 添加模式切换事件监听器
+            const modeSelect = document.getElementById('mode-select');
+            if (modeSelect) {
+                modeSelect.addEventListener('change', function() {
+                    // 模式切换逻辑
+                    console.log('模式已切换为:', this.value);
+                });
+            }
+            
+            // 显示欢迎消息函数
+            function showWelcomeMessage() {
+                // 检查是否已经有欢迎消息，如果没有则添加
+                if (!document.querySelector('.message.message-bot')) {
+                    const welcomeMessage = document.createElement('div');
+                    welcomeMessage.className = 'message message-bot';
+                    welcomeMessage.innerHTML = `
+                        <div class="message-header">
+                            <span class="message-sender">专宝JOBO</span>
+                            <span class="message-time">${new Date().toLocaleTimeString()}</span>
+                        </div>
+                        <div class="message-content">
+                            <p>您好！我是专宝JOBO智能咨询助手，很高兴为您提供职业教育升学相关的咨询服务。</p>
+                            <p>请问您有什么问题需要了解？</p>
+                        </div>
+                    `;
+                    if (chatMessages) chatMessages.appendChild(welcomeMessage);
+                }
+            }
+            
+            // 如果用户已经接受了隐私协议，显示欢迎消息
+            if (hasAcceptedPrivacy) {
+                showWelcomeMessage();
+            }
+            
+            // 为了测试方便，添加一个清除localStorage的函数
+            function clearUserPreferences() {
+                localStorage.removeItem('privacyAccepted');
+                localStorage.removeItem('userInfo');
+                console.log('用户偏好已清除，请刷新页面查看模态框');
+            }
+            
+            // 仅在开发环境下暴露此函数
+            window.clearUserPreferences = clearUserPreferences;
+            
+            // 打开移动端菜单
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.remove('-translate-x-full');
+                mobileMenuOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // 防止背景滚动
+            });
+            
+            // 关闭移动端菜单
+            function closeMobileMenu() {
+                mobileMenu.classList.add('-translate-x-full');
+                mobileMenuOverlay.classList.add('hidden');
+                document.body.style.overflow = ''; // 恢复背景滚动
+            }
+            
+            closeMobileMenuBtn.addEventListener('click', closeMobileMenu);
+            mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+            
+            // 移动端设置按钮事件委托
+            if (settingsBtnMobile) {
+                settingsBtnMobile.addEventListener('click', function() {
+                    if (settingsBtn) {
+                        settingsBtn.click();
+                    }
+                    closeMobileMenu();
+                });
+            }
+            
+            // 点击侧边栏链接后关闭菜单
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+            
+            // 监听窗口大小变化，在大屏幕上自动关闭移动端菜单
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) {
+                    closeMobileMenu();
+                }
+            });
             // 获取DOM元素
             const chatForm = document.getElementById('chat-form');
             const userInput = document.getElementById('user-input');
@@ -512,13 +1223,6 @@
             const generatePdfBtn = document.getElementById('generate-pdf');
             const studentNameInput = document.getElementById('student-name');
             const consultationTypeSelect = document.getElementById('consultation-type');
-            const welcomeModal = document.getElementById('welcome-modal');
-            const privacyModal = document.getElementById('privacy-modal');
-            const viewPrivacyBtn = document.getElementById('view-privacy');
-            const closePrivacyBtn = document.getElementById('close-privacy');
-            const acceptPrivacyBtn = document.getElementById('accept-privacy');
-            const acceptPrivacyFromDetailsBtn = document.getElementById('accept-privacy-from-details');
-            
             // 添加主题切换功能
             const themeIcon = themeToggle.querySelector('i');
             
@@ -557,375 +1261,90 @@
                 }
             });
             
-            // 存储对话历史
+            // 临时对话历史，仅在当前会话有效
             let conversationHistory = [];
 
     
-    // 恢复表单数据
-    restoreFormData();
+    // 初始化页面
+    // 启用聊天输入
+    userInput.disabled = false;
+    document.getElementById('mode-select').disabled = false;
+    chatForm.querySelector('button').disabled = false;
+    chatForm.querySelector('button').classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+    chatForm.querySelector('button').classList.add('bg-primary', 'text-white');
     
-    // 添加这行来恢复对话历史
-    restoreConversationHistory();
+    // 添加模式切换事件监听器
+    modeSelect.addEventListener('change', function() {
+        currentMode = this.value;
+        // 显示切换提示
+        showModeChangeNotification('已切换到' + (currentMode === 'normal' ? '普通模式' : '院士模式'));
+    });
     
-    // 在DOMContentLoaded事件监听器中添加以下代码
-
-    
-    // 检查是否是首次访问
-    const hasVisited = localStorage.getItem('hasVisited');
-    const privacyAccepted = localStorage.getItem('privacyAccepted');
-    
-    if (hasVisited === 'true') {
-        // 如果不是首次访问
-        if (privacyAccepted === 'true') {
-            // 隐私协议已接受，隐藏模态框
-            welcomeModal.classList.add('hidden');
-            privacyModal.classList.add('hidden');
-            
-            // 启用聊天输入
-            userInput.disabled = false;
-            chatForm.querySelector('button').disabled = false;
-            chatForm.querySelector('button').classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
-            chatForm.querySelector('button').classList.add('bg-primary', 'text-white');
-            
-            // 确保欢迎消息存在
-            addWelcomeMessage();
-        } else {
-            // 隐私协议未接受，显示欢迎模态框
-            welcomeModal.classList.remove('hidden');
-            privacyModal.classList.add('hidden');
-        }
-    } else {
-        // 首次访问，显示欢迎模态框
-        localStorage.setItem('hasVisited', 'true');
-        welcomeModal.classList.remove('hidden');
-        privacyModal.classList.add('hidden');
-    }
+    // 确保欢迎消息存在
+    addWelcomeMessage();
     
     // 初始化页面
     scrollToBottom();
     
+    // 立即创建回答模式切换控件，确保用户可以看到
+    setTimeout(() => {
+        // 模式切换功能已集成到输入框中
+    }, 1000);
+    
     // ... 现有代码 ...
 
 
-            // 恢复对话历史
-            function restoreConversationHistory() {
-                const savedHistory = localStorage.getItem('conversationHistory');
-                if (savedHistory) {
-                    try {
-                        conversationHistory = JSON.parse(savedHistory);
-                        // 重新渲染聊天历史
-                        conversationHistory.forEach(msg => {
-                            addMessageToChat(msg.content, msg.role === 'user');
-                        });
-                    } catch (e) {
-                        console.error('解析对话历史时出错:', e);
-                        conversationHistory = [];
-                    }
-                }
-                
+            // 不恢复历史记录，每次刷新页面时清空对话
 
-            }
-
-            // 信息收集表单相关元素
-            const infoCollectionModal = document.getElementById('info-collection-modal');
-            const studentInfoForm = document.getElementById('student-info-form');
-            const cancelInfoBtn = document.getElementById('cancel-info');
+            // 信息收集模态框相关变量已移除
             
             // 隐私协议相关事件
-            // 在用户同意隐私协议后显示信息收集表单
-        function acceptPrivacy() {
-            // 保存隐私协议接受状态到localStorage
-            localStorage.setItem('privacyAccepted', 'true');
-            
-            // 隐藏隐私协议模态框
-            privacyModal.classList.add('hidden');
-            
-            // 隐藏初始问候弹窗
-            welcomeModal.classList.add('hidden');
+                    
+            // 不再需要隐私协议相关事件监听器
             
             // 显示信息收集表单
-            showInfoCollectionForm();
+            // 信息收集表单显示/隐藏函数已移除
             
-            // 恢复表单数据
-            restoreFormData();
+            // restoreFormData函数已完全移除
             
-            // 启用聊天输入
-            userInput.disabled = false;
-            chatForm.querySelector('button').disabled = false;
-            chatForm.querySelector('button').classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
-            
-            // 只有在还没有欢迎消息时才添加
-            const welcomeMessage = document.querySelector('.welcome-message');
-            if (!welcomeMessage) {
-                addWelcomeMessage();
-            }
-        }
+            // 初始化聊天功能
+            function initializeChat() {
+                // 检查用户是否已经接受隐私协议
+                const hasAcceptedPrivacy = localStorage.getItem('privacyAccepted') === 'true';
+                
+                if (hasAcceptedPrivacy) {
+                    // 如果已接受隐私协议，启用聊天功能
+                    userInput.disabled = false;
+                    document.getElementById('mode-select').disabled = false;
+                    chatForm.querySelector('button').disabled = false;
+                    chatForm.querySelector('button').classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                    chatForm.querySelector('button').classList.add('bg-primary', 'text-white');
                     
-            closePrivacyBtn.addEventListener('click', function() {
-                privacyModal.classList.add('hidden');
-                welcomeModal.classList.remove('hidden');
-            });
-            
-            // 显示信息收集表单
-            function showInfoCollectionForm() {
-                infoCollectionModal.classList.remove('hidden');
-            }
-            
-            // 隐藏信息收集表单
-            function hideInfoCollectionForm() {
-                infoCollectionModal.classList.add('hidden');
-            }
-            
-            // 从localStorage恢复表单数据
-            function restoreFormData() {
-                // 恢复原有数据
-                const studentName = localStorage.getItem('studentName');
-                const educationLevel = localStorage.getItem('educationLevel');
-                const interestMajor = localStorage.getItem('interestMajor');
-                const 升学目标 = localStorage.getItem('升学目标');
-                
-                // 恢复新增的基础身份信息
-                const gender = localStorage.getItem('gender');
-                const birthDate = localStorage.getItem('birthDate');
-                
-                // 省市数据
-                const cityData = {
-                    "北京市": ["北京市"],
-                    "上海市": ["上海市"],
-                    "天津市": ["天津市"],
-                    "重庆市": ["重庆市"],
-                    "河北省": ["石家庄市", "唐山市", "秦皇岛市", "邯郸市", "邢台市", "保定市", "张家口市", "承德市", "沧州市", "廊坊市", "衡水市"],
-                    "山西省": ["太原市", "大同市", "阳泉市", "长治市", "晋城市", "朔州市", "晋中市", "运城市", "忻州市", "临汾市", "吕梁市"],
-                    "内蒙古自治区": ["呼和浩特市", "包头市", "乌海市", "赤峰市", "通辽市", "鄂尔多斯市", "呼伦贝尔市", "巴彦淖尔市", "乌兰察布市", "兴安盟", "锡林郭勒盟", "阿拉善盟"],
-                    "辽宁省": ["沈阳市", "大连市", "鞍山市", "抚顺市", "本溪市", "丹东市", "锦州市", "营口市", "阜新市", "辽阳市", "盘锦市", "铁岭市", "朝阳市", "葫芦岛市"],
-                    "吉林省": ["长春市", "吉林市", "四平市", "辽源市", "通化市", "白山市", "松原市", "白城市", "延边朝鲜族自治州"],
-                    "黑龙江省": ["哈尔滨市", "齐齐哈尔市", "鸡西市", "鹤岗市", "双鸭山市", "大庆市", "伊春市", "佳木斯市", "七台河市", "牡丹江市", "黑河市", "绥化市", "大兴安岭地区"],
-                    "江苏省": ["南京市", "无锡市", "徐州市", "常州市", "苏州市", "南通市", "连云港市", "淮安市", "盐城市", "扬州市", "镇江市", "泰州市", "宿迁市"],
-                    "浙江省": ["杭州市", "宁波市", "温州市", "嘉兴市", "湖州市", "绍兴市", "金华市", "衢州市", "舟山市", "台州市", "丽水市"],
-                    "安徽省": ["合肥市", "芜湖市", "蚌埠市", "淮南市", "马鞍山市", "淮北市", "铜陵市", "安庆市", "黄山市", "滁州市", "阜阳市", "宿州市", "六安市", "亳州市", "池州市", "宣城市"],
-                    "福建省": ["福州市", "厦门市", "莆田市", "三明市", "泉州市", "漳州市", "南平市", "龙岩市", "宁德市"],
-                    "江西省": ["南昌市", "景德镇市", "萍乡市", "九江市", "新余市", "鹰潭市", "赣州市", "吉安市", "宜春市", "抚州市", "上饶市"],
-                    "山东省": ["济南市", "青岛市", "淄博市", "枣庄市", "东营市", "烟台市", "潍坊市", "济宁市", "泰安市", "威海市", "日照市", "临沂市", "德州市", "聊城市", "滨州市", "菏泽市"],
-                    "河南省": ["郑州市", "开封市", "洛阳市", "平顶山市", "安阳市", "鹤壁市", "新乡市", "焦作市", "濮阳市", "许昌市", "漯河市", "三门峡市", "南阳市", "商丘市", "信阳市", "周口市", "驻马店市"],
-                    "湖北省": ["武汉市", "黄石市", "十堰市", "宜昌市", "襄阳市", "鄂州市", "荆门市", "孝感市", "荆州市", "黄冈市", "咸宁市", "随州市", "恩施土家族苗族自治州"],
-                    "湖南省": ["长沙市", "株洲市", "湘潭市", "衡阳市", "邵阳市", "岳阳市", "常德市", "张家界市", "益阳市", "郴州市", "永州市", "怀化市", "娄底市", "湘西土家族苗族自治州"],
-                    "广东省": ["广州市", "韶关市", "深圳市", "珠海市", "汕头市", "佛山市", "江门市", "湛江市", "茂名市", "肇庆市", "惠州市", "梅州市", "汕尾市", "河源市", "阳江市", "清远市", "东莞市", "中山市", "潮州市", "揭阳市", "云浮市"],
-                    "广西壮族自治区": ["南宁市", "柳州市", "桂林市", "梧州市", "北海市", "防城港市", "钦州市", "贵港市", "玉林市", "百色市", "贺州市", "河池市", "来宾市", "崇左市"],
-                    "海南省": ["海口市", "三亚市", "三沙市", "儋州市"],
-                    "四川省": ["成都市", "自贡市", "攀枝花市", "泸州市", "德阳市", "绵阳市", "广元市", "遂宁市", "内江市", "乐山市", "南充市", "眉山市", "宜宾市", "广安市", "达州市", "雅安市", "巴中市", "资阳市", "阿坝藏族羌族自治州", "甘孜藏族自治州", "凉山彝族自治州"],
-                    "贵州省": ["贵阳市", "六盘水市", "遵义市", "安顺市", "毕节市", "铜仁市", "黔西南布依族苗族自治州", "黔东南苗族侗族自治州", "黔南布依族苗族自治州"],
-                    "云南省": ["昆明市", "曲靖市", "玉溪市", "保山市", "昭通市", "丽江市", "普洱市", "临沧市", "楚雄彝族自治州", "红河哈尼族彝族自治州", "文山壮族苗族自治州", "西双版纳傣族自治州", "大理白族自治州", "德宏傣族景颇族自治州", "怒江傈僳族自治州", "迪庆藏族自治州"],
-                    "西藏自治区": ["拉萨市", "日喀则市", "昌都市", "林芝市", "山南市", "那曲市", "阿里地区"],
-                    "陕西省": ["西安市", "铜川市", "宝鸡市", "咸阳市", "渭南市", "延安市", "汉中市", "榆林市", "安康市", "商洛市"],
-                    "甘肃省": ["兰州市", "嘉峪关市", "金昌市", "白银市", "天水市", "武威市", "张掖市", "平凉市", "酒泉市", "庆阳市", "定西市", "陇南市", "临夏回族自治州", "甘南藏族自治州"],
-                    "青海省": ["西宁市", "海东市", "海北藏族自治州", "黄南藏族自治州", "海南藏族自治州", "果洛藏族自治州", "玉树藏族自治州", "海西蒙古族藏族自治州"],
-                    "宁夏回族自治区": ["银川市", "石嘴山市", "吴忠市", "固原市", "中卫市"],
-                    "新疆维吾尔自治区": ["乌鲁木齐市", "克拉玛依市", "吐鲁番市", "哈密市", "昌吉回族自治州", "博尔塔拉蒙古自治州", "巴音郭楞蒙古自治州", "阿克苏地区", "克孜勒苏柯尔克孜自治州", "喀什地区", "和田地区", "伊犁哈萨克自治州", "塔城地区", "阿勒泰地区"]
-                };
-
-                // 省份选择事件
-                document.getElementById('household-province').addEventListener('change', function() {
-                    const province = this.value;
-                    const citySelect = document.getElementById('household-city');
+                    // 添加模式切换事件监听器
+                    modeSelect.addEventListener('change', function() {
+                        currentMode = this.value;
+                        // 显示切换提示
+                        showModeChangeNotification('已切换到' + (currentMode === 'normal' ? '普通模式' : '院士模式'));
+                    });
                     
-                    if (province === '') {
-                        citySelect.innerHTML = '<option value="">请先选择省份</option>';
-                        citySelect.disabled = true;
-                    } else {
-                        const cities = cityData[province] || [];
-                        let options = '<option value="">请选择城市</option>';
-                        cities.forEach(city => {
-                            options += `<option value="${city}">${city}</option>`;
-                        });
-                        citySelect.innerHTML = options;
-                        citySelect.disabled = false;
-                    }
-                });
-                    const province = localStorage.getItem('householdProvince') || '';
-                    const city = localStorage.getItem('householdCity') || '';
-                    
-                    
-                const contactInfo = localStorage.getItem('contactInfo');
-                
-                // 恢复新增的中考成绩与排名信息
-                const chineseScore = localStorage.getItem('chineseScore');
-                const mathScore = localStorage.getItem('mathScore');
-                const englishScore = localStorage.getItem('englishScore');
-                const totalScore = localStorage.getItem('totalScore');
-                const ranking = localStorage.getItem('ranking');
-                
-                // 恢复新增的学业能力证明信息
-                const academicTranscript = localStorage.getItem('academicTranscript');
-                const skillGrades = localStorage.getItem('skillGrades');
-                const certificates = localStorage.getItem('certificates');
-                
-                // 恢复新增的家庭基础条件信息
-                const familyIncome = localStorage.getItem('familyIncome');
-                const lowIncome = localStorage.getItem('lowIncome');
-                const tuitionCapacity = localStorage.getItem('tuitionCapacity');
-                
-                // 如果有存储的数据，则填充表单
-                if (studentName) document.getElementById('student-name').value = studentName;
-                if (educationLevel) document.getElementById('education-level').value = educationLevel;
-                if (interestMajor) document.getElementById('interest-major').value = interestMajor;
-                if (升学目标) document.getElementById('升学目标').value = 升学目标;
-                
-                if (gender) document.getElementById('gender').value = gender;
-                if (birthDate) document.getElementById('birth-date').value = birthDate;
-                if (province) {
-                        document.getElementById('household-province').value = province;
-                        // 触发省份选择事件以加载城市选项
-                        document.getElementById('household-province').dispatchEvent(new Event('change'));
-                        // 设置城市值
-                        document.getElementById('household-city').value = city;
-                    }
-                if (contactInfo) document.getElementById('contact-info').value = contactInfo;
-                
-    
-                if (chineseScore) document.getElementById('chinese-score').value = chineseScore;
-                if (mathScore) document.getElementById('math-score').value = mathScore;
-                if (englishScore) document.getElementById('english-score').value = englishScore;
-                if (totalScore) document.getElementById('total-score').value = totalScore;
-                if (ranking) document.getElementById('ranking').value = ranking;
-                
-                if (academicTranscript) document.getElementById('academic-transcript').value = academicTranscript;
-                if (skillGrades) document.getElementById('skill-grades').value = skillGrades;
-                if (certificates) document.getElementById('certificates').value = certificates;
-                
-                if (familyIncome) document.getElementById('family-income').value = familyIncome;
-                if (lowIncome) document.getElementById('low-income').value = lowIncome;
-                if (tuitionCapacity) document.getElementById('tuition-capacity').value = tuitionCapacity;
-            }
-            
-            // 在用户同意隐私协议后显示信息收集表单
-            function acceptPrivacy() {
-                // 检查是否已经接受过隐私协议
-                localStorage.setItem('privacyAccepted', 'true');
-                
-                // 隐藏隐私协议模态框
-                privacyModal.classList.add('hidden');
-                
-                // 隐藏初始问候弹窗
-                welcomeModal.classList.add('hidden');
-                
-                // 显示信息收集表单
-                showInfoCollectionForm();
-                
-                // 恢复表单数据
-                restoreFormData();
-                
-                // 启用聊天输入
-                userInput.disabled = false;
-                chatForm.querySelector('button').disabled = false;
-                chatForm.querySelector('button').classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
-                chatForm.querySelector('button').classList.add('bg-primary', 'text-white');
-                
-                // 只有在还没有欢迎消息时才添加
-                const welcomeMessage = document.querySelector('.welcome-message');
-                if (!welcomeMessage) {
+                    // 显示欢迎消息
                     addWelcomeMessage();
+                } else {
+                    // 如果未接受隐私协议，禁用聊天功能
+                    userInput.disabled = true;
+                    document.getElementById('mode-select').disabled = true;
+                    chatForm.querySelector('button').disabled = true;
+                    chatForm.querySelector('button').classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                    chatForm.querySelector('button').classList.remove('bg-primary', 'text-white');
                 }
             }
             
-            // 取消填写信息
-            cancelInfoBtn.addEventListener('click', function() {
-                if (confirm('您确定要取消填写吗？填写信息有助于我们为您提供更个性化的咨询服务。')) {
-                    hideInfoCollectionForm();
-                }
-            });
-            
-            // 处理表单提交
-            studentInfoForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // 获取原有表单数据
-                const studentName = document.getElementById('student-name').value;
-                const educationLevel = document.getElementById('education-level').value;
-                const interestMajor = document.getElementById('interest-major').value;
-                const 升学目标 = document.getElementById('升学目标').value;
-                
-                // 获取新增的基础身份信息
-                const gender = document.getElementById('gender').value;
-                const birthDate = document.getElementById('birth-date').value;
-                const province = document.getElementById('household-province').value;
-                const city = document.getElementById('household-city').value;
-                const contactInfo = document.getElementById('contact-info').value;
-                
-                // 获取新增的中考成绩与排名信息
-                // 获取新增的中考成绩与排名信息
-                const chineseScore = document.getElementById('chinese-score').value;
-                const mathScore = document.getElementById('math-score').value;
-                const englishScore = document.getElementById('english-score').value;
-                const totalScore = document.getElementById('total-score').value;
-                const ranking = document.getElementById('ranking').value;   
-                
-                // 获取新增的学业能力证明信息
-                const academicTranscript = document.getElementById('academic-transcript').value;
-                const skillGrades = document.getElementById('skill-grades').value;
-                const certificates = document.getElementById('certificates').value;
-                
-                // 获取新增的家庭基础条件信息
-                const familyIncome = document.getElementById('family-income').value;
-                const lowIncome = document.getElementById('low-income').value;
-                const tuitionCapacity = document.getElementById('tuition-capacity').value;
-                
-                // 存储原有数据到本地存储
-                localStorage.setItem('studentName', studentName);
-                localStorage.setItem('educationLevel', educationLevel);
-                localStorage.setItem('interestMajor', interestMajor);
-                localStorage.setItem('升学目标', 升学目标);
-                
-                // 存储新增的基础身份信息到本地存储
-                localStorage.setItem('gender', gender);
-                localStorage.setItem('birthDate', birthDate);
-                localStorage.setItem('householdProvince', province);
-                localStorage.setItem('householdCity', city);
-                localStorage.setItem('contactInfo', contactInfo);
-                
-            
-                // 存储新增的中考成绩与排名信息到本地存储
-                localStorage.setItem('chineseScore', chineseScore);
-                localStorage.setItem('mathScore', mathScore);
-                localStorage.setItem('englishScore', englishScore);
-                localStorage.setItem('totalScore', totalScore);
-                localStorage.setItem('ranking', ranking);
-              
-                // 存储新增的学业能力证明信息到本地存储
-                localStorage.setItem('academicTranscript', academicTranscript);
-                localStorage.setItem('skillGrades', skillGrades);
-                localStorage.setItem('certificates', certificates);
-                
-                // 存储新增的家庭基础条件信息到本地存储
-                localStorage.setItem('familyIncome', familyIncome);
-                localStorage.setItem('lowIncome', lowIncome);
-                localStorage.setItem('tuitionCapacity', tuitionCapacity);
-                
-                // 隐藏信息收集表单
-                hideInfoCollectionForm();
-                
-                // 确保隐私协议模态框也被隐藏
-                privacyModal.classList.add('hidden');
-                
-                // 显示欢迎消息（如果还没有显示）
-                const welcomeMessage = document.querySelector('.welcome-message');
-                if (!welcomeMessage) {
-                    addWelcomeMessage();
-                }
-            });
-            
-            acceptPrivacyBtn.addEventListener('click', acceptPrivacy);
-            acceptPrivacyFromDetailsBtn.addEventListener('click', acceptPrivacy);
+            // 初始化聊天功能
+            initializeChat();
             
             // 添加表单提交事件处理
             chatForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                
-                // 检查隐私协议是否已接受
-                if (welcomeModal.classList.contains('hidden') === false) {
-                    // 如果隐私协议模态框未隐藏，则显示它
-                    welcomeModal.classList.remove('hidden');
-                    return;
-                }
                 
                 const message = userInput.value.trim();
                 if (message) {
@@ -956,16 +1375,7 @@
                 
                 const welcomeDiv = document.createElement('div');
                 welcomeDiv.className = 'flex items-start space-x-3 welcome-message'; // 添加welcome-message类名
-                welcomeDiv.innerHTML = `
-                    <div class="bg-primary text-white p-2 rounded-full">
-                        <i class="fa fa-robot"></i>
-                    </div>
-                    <div class="bg-gray-50 rounded-xl p-4 max-w-[80%]">
-                        <p class="text-gray-800">感谢您的信任！为了更好地为您提供职业教育升学建议，您可以告诉我：<br>
-                        您感兴趣的专业领域<br>
-                        我会根据您的情况提供个性化建议。</p>
-                    </div>
-                `;
+                welcomeDiv.innerHTML = '<div class="bg-primary text-white p-2 rounded-full"><i class="fa fa-robot"></i></div><div class="bg-gray-50 rounded-xl p-4 max-w-[80%]"><p class="text-gray-800">感谢您的信任！为了更好地为您提供职业教育升学建议，您可以告诉我：<br>您感兴趣的专业领域<br>我会根据您的情况提供个性化建议。</p></div>';
                 
                 chatHistory.appendChild(welcomeDiv);
                 scrollToBottom();
@@ -988,30 +1398,24 @@
                 messageDiv.className = 'flex items-start space-x-3';
                 
                 if (isUser) {
-                    messageDiv.innerHTML = `
-                        <div class="flex-grow"></div>
-                        <div class="bg-primary/10 rounded-xl p-4 max-w-[80%]">
-                            <p class="text-gray-800">${message}</p>
-                        </div>
-                        <div class="bg-gray-200 text-gray-700 p-2 rounded-full">
-                            <i class="fa fa-user"></i>
-                        </div>
-                    `;
+                    messageDiv.innerHTML = '<div class="flex-grow"></div><div class="bg-primary/10 rounded-xl p-4 max-w-[80%]"><p class="text-gray-800">' + message + '</p></div><div class="bg-gray-200 text-gray-700 p-2 rounded-full"><i class="fa fa-user"></i></div>';
+                    chatHistory.appendChild(messageDiv);
+                    scrollToBottom();
                 } else {
-                    // 格式化AI回答以提高条理性
-                    const formattedMessage = formatAIResponse(message);
-                    messageDiv.innerHTML = `
-                        <div class="bg-primary text-white p-2 rounded-full">
-                            <i class="fa fa-robot"></i>
-                        </div>
-                        <div class="bg-gray-50 rounded-xl p-4 max-w-[80%] ai-response">
-                            ${formattedMessage}
-                        </div>
-                    `;
+                    // 临时添加一个加载中的占位符
+                    messageDiv.innerHTML = '<div class="bg-primary text-white p-2 rounded-full"><i class="fa fa-robot"></i></div><div class="bg-gray-50 rounded-xl p-4 max-w-[80%] ai-response"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
+                    chatHistory.appendChild(messageDiv);
+                    scrollToBottom();
+                    
+                    // 异步格式化AI回答
+                    try {
+                        const formattedMessage = formatAIResponse(message);
+                        messageDiv.innerHTML = '<div class="bg-primary text-white p-2 rounded-full"><i class="fa fa-robot"></i></div><div class="bg-gray-50 rounded-xl p-4 max-w-[80%] ai-response">' + formattedMessage + '</div>';
+                    } catch (error) {
+                        console.error('格式化AI回答时出错:', error);
+                        messageDiv.innerHTML = '<div class="bg-primary text-white p-2 rounded-full"><i class="fa fa-robot"></i></div><div class="bg-gray-50 rounded-xl p-4 max-w-[80%] ai-response"><p>抱歉，处理回答时出现错误。</p></div>';
+                    }
                 }
-                
-                chatHistory.appendChild(messageDiv);
-                scrollToBottom();
                 
                 // 保存到对话历史
                 conversationHistory.push({
@@ -1020,11 +1424,13 @@
                 });
                 // 保存到对话历史
 
-                // 保存到localStorage
-                try {
-                    localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
-                } catch (e) {
-                    console.error('保存对话历史时出错:', e);
+                // 不再保存到localStorage，仅在当前会话中保留对话历史
+                
+                // 移动端优化：自动关闭键盘（简单实现）
+                if (isUser) {
+                    setTimeout(() => {
+                        document.activeElement.blur();
+                    }, 300);
                 }
             }
             
@@ -1061,103 +1467,213 @@
             // 添加询问计数器
             let userQuestionCount = 0;
             
-// 调用DeepSeek API获取回复
-async function getAIResponse(userMessage) {
-    try {
-        // 显示"正在思考"动画
-        addTypingIndicator();
-        
-        // 根据询问次数设置不同的系统提示
-        let systemPrompt = "你是一个专注于职业教育升学咨询的智能助手。";
-        
-        if (userQuestionCount < 5) {
-            systemPrompt += "在前五次交互中，请主动引导用户提供以下升学相关信息，以了解他们的主观认知和深层需求："+
-            "1. 兴趣与职业倾向：通过具体场景引导，如'帮表弟补习时是否享受教学过程？'（教育类职业适配度）、'组织家庭聚餐是否喜欢策划流程？'（酒店管理/会展策划潜力）、'是否排斥重复操作类工作？'（避开机械维修等专业）"+
-            "2. 学习动机与抗压能力：分析成绩波动原因，如'物理成绩下滑是因兴趣不足还是方法不当？'；了解抗压表现，如'考试失利后如何调整？更倾向独自消化或求助？'（判断是否适合升学压力大的'职教高考班'）"+
-            "3. 家庭支持度与隐性压力：探讨父母期望冲突，如'家人希望学会计，但你更喜欢设计，如何权衡？'；了解经济顾虑，如'若选中外合作班但学费较高，家庭是否需要借贷？'"+
-            "4. 价值观排序：了解优先级选择，如'更看重未来薪资，还是工作稳定性？'；探讨地域偏好，如'能否接受异地就读？对通勤时长容忍度？'"+
-            "5. 规则认知盲区：验证政策理解，如'你知道艺术类志愿7月17日10点就截止吗？'；纠偏误区，如'是否认为特长生免填志愿？'（强调必须系统填报）"+
-            "请保持回答简洁，并在结尾提供1-2个具体问题示例来引导用户继续提问。";
-        } else {
-            systemPrompt += "请以清晰准确完备有条理的方式回答用户的问题，提供相关的政策信息、升学途径、院校选择建议、专业介绍等内容。请确保回答内容准确、实用，并根据用户的具体问题提供个性化建议。"+
-            "在对话中，请继续深入探讨以下主题，以全面了解用户的主观认知和深层需求："+
-            "1. 兴趣与职业倾向：通过具体场景引导，了解用户的职业适配度"+
-            "2. 学习动机与抗压能力：分析用户的学习动机和抗压表现"+
-            "3. 家庭支持度与隐性压力：了解用户家庭的支持度和隐性压力"+
-            "4. 价值观排序：了解用户的价值观优先级和地域偏好"+
-            "5. 规则认知盲区：验证用户对政策的理解，纠偏误区"+
-            "请根据对话历史和已收集的信息，提供个性化的建议和指导。";
-        }
-        systemPrompt += "请在回答时使用以下格式：\n"+
-            "1. 使用分点列出关键信息（避免大段文字）。\n"+
-            "2. 每个要点不超过3句话，简明扼要。\n"+
-            "3. 最后给出1-2个引导性问题（单独成段）。";
-
-        // 添加学生基本信息到系统提示
-        const studentInfo = {
-            studentName: localStorage.getItem('studentName'),
-            educationLevel: localStorage.getItem('educationLevel'),
-            interestMajor: localStorage.getItem('interestMajor'),
-            升学目标: localStorage.getItem('升学目标')
-        };
-        
-        if (studentInfo.studentName || studentInfo.educationLevel || studentInfo.interestMajor || studentInfo.升学目标) {
-            systemPrompt += `\n以下是学生的基本信息：`;
-            if (studentInfo.studentName) systemPrompt += `\n姓名：${studentInfo.studentName}`;
-            if (studentInfo.educationLevel) systemPrompt += `\n教育阶段：${studentInfo.educationLevel}`;
-            if (studentInfo.interestMajor) systemPrompt += `\n感兴趣的专业领域：${studentInfo.interestMajor}`;
-            if (studentInfo.升学目标) systemPrompt += `\n升学目标：${studentInfo.升学目标}`;
-        }
-        
-        // 准备API请求数据
-        const messages = [
-            {
-                role: "system",
-                content: systemPrompt
-            },
-            ...conversationHistory,
-            {
-                role: "user",
-                content: userMessage
+            // 回答模式状态（默认使用普通模式）
+            let currentMode = 'normal'; // 'normal' 或 'academician'
+            
+            // 显示模式切换通知
+            function showModeChangeNotification(message) {
+                const notification = document.createElement('div');
+                notification.className = 'fixed bottom-10 right-4 z-50 bg-gray-800 text-white py-2 px-4 rounded-lg text-sm transform transition-all opacity-0 translate-y-2';
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                // 显示动画
+                setTimeout(() => {
+                    notification.style.opacity = '1';
+                    notification.style.transform = 'translateY(0)';
+                }, 10);
+                
+                // 自动隐藏
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateY(2)';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 2000);
             }
-        ];
-        
-        // 构建API请求
-        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer sk-f4272a6f46524f5e8b21268c0fa287aa'
-            },
-            body: JSON.stringify({
-                model: 'deepseek-chat',
-                messages: messages,
-                temperature: 0.7,
-                max_tokens: 1000
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error(`API请求失败: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        const aiResponse = data.choices[0].message.content;
-        
-        // 移除"正在思考"动画
-        removeTypingIndicator();
-        
-        return aiResponse;
-    } catch (error) {
-        console.error('获取AI回复时出错:', error);
-        
-        // 移除"正在思考"动画
-        removeTypingIndicator();
-        
-        // 返回错误消息
-        return "很抱歉，获取回复时发生错误。请稍后再试。";
-    }
-}
+            
+            // 院士模式 - 模拟数据库查询函数
+            async function queryKnowledgeBase(query) {
+                // 模拟数据库中的知识（实际应用中应该连接到真实数据库）
+                const knowledgeBase = {
+                    '职业教育': {
+                        'definition': '职业教育是培养具有一定专业技能、职业道德和创新精神的高素质劳动者和技术技能人才的教育形式。',
+                        'advantages': ['就业导向明确', '实用性强', '学习周期相对较短', '就业率较高']
+                    },
+                    '专升本': {
+                        'pathways': ['普通高校专升本', '自考专升本', '成考专升本', '网络教育专升本'],
+                        'requirements': '专科应届毕业生，通过统一组织的专升本考试，成绩达到录取标准。'
+                    },
+                    '热门专业': {
+                        'it': ['人工智能', '大数据技术', '物联网工程', '云计算技术'],
+                        'medical': ['护理', '医学检验技术', '康复治疗技术', '口腔医学技术'],
+                        'education': ['幼儿教育', '小学教育', '特殊教育', '教育技术学']
+                    },
+                    '就业前景': {
+                        'it': '随着数字化转型加速，IT类专业人才需求持续增长，特别是人工智能、大数据等新兴领域人才供不应求。',
+                        'medical': '医疗健康行业稳定发展，特别是基层医疗机构对专业技能人才需求旺盛，就业前景广阔。',
+                        'education': '教育行业一直是就业的稳定领域，特别是学前教育和特殊教育方向人才缺口较大。'
+                    },
+                    '升学规划': {
+                        'early': '提前了解目标专业和院校要求，制定科学的学习计划，注重基础知识和专业技能的培养。',
+                        'application': '合理填报志愿，综合考虑院校实力、专业特色、地理位置和就业前景等因素。'
+                    }
+                };
+                
+                // 简单的查询逻辑（实际应用中应该使用更复杂的匹配算法）
+                let answer = "根据我们的专业数据库，关于您的问题：\n\n";
+                
+                // 分析问题关键词，匹配知识库
+                if (query.includes('职业教育')) {
+                    answer += `## 职业教育概述\n${knowledgeBase['职业教育']['definition']}\n\n职业教育的主要优势：\n`;
+                    knowledgeBase['职业教育']['advantages'].forEach((adv, index) => {
+                        answer += `${index + 1}. ${adv}\n`;
+                    });
+                }
+                
+                if (query.includes('专升本')) {
+                    answer += `## 专升本途径\n专升本主要有以下几种途径：\n`;
+                    knowledgeBase['专升本']['pathways'].forEach((path, index) => {
+                        answer += `${index + 1}. ${path}\n`;
+                    });
+                    answer += `\n基本要求：${knowledgeBase['专升本']['requirements']}\n`;
+                }
+                
+                if (query.includes('专业') || query.includes('热门')) {
+                    answer += `## 热门专业推荐\n`;
+                    answer += `IT类热门专业：${knowledgeBase['热门专业']['it'].join('、')}\n`;
+                    answer += `医学类热门专业：${knowledgeBase['热门专业']['medical'].join('、')}\n`;
+                    answer += `教育类热门专业：${knowledgeBase['热门专业']['education'].join('、')}\n`;
+                }
+                
+                if (query.includes('就业') || query.includes('前景')) {
+                    answer += `## 就业前景分析\n`;
+                    answer += `IT行业：${knowledgeBase['就业前景']['it']}\n\n`;
+                    answer += `医疗行业：${knowledgeBase['就业前景']['medical']}\n\n`;
+                    answer += `教育行业：${knowledgeBase['就业前景']['education']}\n\n`;
+                }
+                
+                if (query.includes('规划') || query.includes('准备')) {
+                    answer += `## 升学规划建议\n`;
+                    answer += `前期准备：${knowledgeBase['升学规划']['early']}\n\n`;
+                    answer += `报考策略：${knowledgeBase['升学规划']['application']}\n\n`;
+                }
+                
+                // 如果没有匹配到相关知识，返回一个通用回答
+                if (answer === "根据我们的专业数据库，关于您的问题：\n\n") {
+                    answer += "我们的专业数据库中没有找到完全匹配的信息。建议您提供更具体的问题，以便我们从专业知识库中为您找到最准确的答案。";
+                }
+                
+                // 添加院士模式的标识和专家建议风格
+                answer += "\n\n[注：此回答由专宝JOBO院士专家数据库提供，内容经过权威专家审核]";
+                
+                return answer;
+            }
+            
+            // 调用DeepSeek API获取回复
+            async function getAIResponse(userMessage) {
+                try {
+                    // 显示"正在思考"动画
+                    addTypingIndicator();
+                    
+                    // 根据询问次数设置不同的系统提示
+                    let systemPrompt = "你是一个专注于职业教育升学咨询的智能助手。";
+                    
+                    if (userQuestionCount < 5) {
+                        systemPrompt += "在前五次交互中，请主动引导用户提供以下升学相关信息，以了解他们的主观认知和深层需求："
+                        systemPrompt += "1. 兴趣与职业倾向：通过具体场景引导了解用户兴趣爱好和潜在职业适配性；"
+                        systemPrompt += "2. 学习动机与抗压能力：分析用户的学习态度和面对压力的表现；"
+                        systemPrompt += "3. 家庭支持度与隐性压力：探讨家庭对升学的期望和经济考虑。"
+                        systemPrompt += "请用友好、专业的语气，根据用户的问题进行追问，每次只关注一个方面，不要一次性问太多问题。";
+                    } else {
+                        systemPrompt += "基于已收集的信息，为用户提供专业、准确、有针对性的升学建议。";
+                        systemPrompt += "请结合职业教育领域的专业知识，包括专业选择、院校推荐、升学规划等方面。";
+                        systemPrompt += "回答要具体、实用，避免模糊的建议，为用户提供清晰的方向和可行的方案。";
+                    }
+                    
+                    // 构建消息数组
+                    const messages = [
+                        {
+                            role: "system",
+                            content: systemPrompt
+                        },
+                        {
+                            role: "user",
+                            content: userMessage
+                        }
+                    ];
+                    
+                    // 构建API请求
+                    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer sk-f4272a6f46524f5e8b21268c0fa287aa'
+                        },
+                        body: JSON.stringify({
+                            model: 'deepseek-chat',
+                            messages: messages,
+                            temperature: 0.7,
+                            max_tokens: 1000
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API请求失败: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    const aiResponse = data.choices[0].message.content;
+                    
+                    // 移除"正在思考"动画
+                    removeTypingIndicator();
+                    
+                    return aiResponse;
+                } catch (error) {
+                    console.error('获取AI回复时出错:', error);
+                    
+                    // 移除"正在思考"动画
+                    removeTypingIndicator();
+                    
+                    // 返回错误消息
+                    return "很抱歉，获取回复时发生错误。请稍后再试。";
+                }
+            }
+            
+            // 调用AI压缩文本到200字内并保持人性化
+            async function compressWithAI(text) {
+                try {
+                    const systemPrompt = "你是一个专业的文本压缩助手，请将提供的内容压缩到200字以内，同时保持内容的核心意思和人性化表达。不要简单截断，而是进行智能概括，确保语言自然流畅，信息完整。";
+                    
+                    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer sk-f4272a6f46524f5e8b21268c0fa287aa'
+                        },
+                        body: JSON.stringify({
+                            model: 'deepseek-chat',
+                            messages: [
+                                { role: "system", content: systemPrompt },
+                                { role: "user", content: text }
+                            ],
+                            temperature: 0.5,
+                            max_tokens: 300
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`压缩API请求失败: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    return data.choices[0].message.content;
+                } catch (error) {
+                    console.error('AI压缩失败，使用原始文本:', error);
+                    return text; // 失败时返回原始文本
+                }
+            }
             
             // 格式化AI回答以提高条理性
             function formatAIResponse(response) {
@@ -1171,13 +1687,21 @@ async function getAIResponse(userMessage) {
                     if (simplifiedResponse.startsWith("你好") || simplifiedResponse.startsWith("您好")) {
                         simplifiedResponse = simplifiedResponse.substring(simplifiedResponse.indexOf("，") + 1).trim();
                     }
-                     
- 
-                    // 如果回答过长，进行截断
+                       
+                    // 添加引导性问题提示语
+                    let promptText = "我很乐意为您提供更多帮助！";
+                    if (userQuestionCount === 0) promptText = "您可以告诉我您的教育阶段，以便我提供更精准的建议。";
+                    if (userQuestionCount === 1) promptText = "了解您的兴趣爱好能让我为您推荐更合适的专业方向。";
+                    if (userQuestionCount === 2) promptText = "分享您的职业规划可以帮助我提供更有针对性的建议。";
+                    if (userQuestionCount === 3) promptText = "您对学校的偏好会影响我的推荐结果。";
+                    if (userQuestionCount === 4) promptText = "了解不同的升学途径有助于您做出更明智的选择。";
+                    
+                    // 如果回答超过200字，进行截断
                     if (simplifiedResponse.length > 200) {
                         simplifiedResponse = simplifiedResponse.substring(0, 200) + "...";
                     }
-                        // 检测数字并分行显示
+                    
+                    // 检测数字并分行显示
                     let formattedResponse = '';
                     
                     // 使用正则表达式匹配数字点开头的内容
@@ -1216,9 +1740,11 @@ async function getAIResponse(userMessage) {
                             formattedResponse = `<p>${simplifiedResponse}</p>`;
                         }
                     }
-        
-                    // 统一格式化，确保每次回复都保持简洁一致
-                    return `<p>${simplifiedResponse}</p><p style="margin-top: 10px; font-weight: bold;">请告诉我更多关于您的情况，我将为您提供更详细的建议。</p>`;
+                    
+                    // 添加引导性问题提示语
+                    formattedResponse += `<p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; margin-bottom: 0; background: none; display: block; padding: 0;">${promptText}</p>`;
+                    
+                    return formattedResponse;
                 }
                 
                 // 第六次及以后的询问：以清晰准确完备有条理的方式回答
@@ -1245,7 +1771,9 @@ async function getAIResponse(userMessage) {
                     // 对非结构化内容进行智能分段和结构化处理
                     return formatUnstructuredResponse(trimmedResponse);
                 }
-                // 格式化结构化响应
+            }
+        });
+            // 格式化结构化响应
 // 格式化结构化响应
 // 格式化结构化响应
 function formatStructuredResponse(response) {
@@ -1294,325 +1822,299 @@ function formatUnstructuredResponse(response) {
     );
     
     return paragraphs.join('\n');
-}}
+}
             
-            // 报告生成模态框事件处理
-generateReportBtn.addEventListener('click', function() {
-    reportModal.classList.remove('hidden');
-});
+            // 获取DOM元素
+            const reportModal = document.getElementById('report-modal');
+            const themeToggle = document.getElementById('theme-toggle');
+            const modelStatus = document.getElementById('model-status');
+            const generateReport = document.getElementById('generate-report');
+            const settingsBtn = document.getElementById('settings-btn');
+            const studentNameInput = document.getElementById('student-name');
+            const consultationTypeSelect = document.getElementById('consultation-type');
+            
+            // 1. 主题切换功能 - 月亮图标
+            themeToggle.addEventListener('click', function() {
+                const isDark = document.body.classList.toggle('dark-theme');
+                
+                // 切换图标
+                const icon = themeToggle.querySelector('i');
+                if (isDark) {
+                    icon.classList.remove('fa-moon-o');
+                    icon.classList.add('fa-sun-o');
+                    document.body.classList.add('bg-gray-900', 'text-white');
+                    document.body.classList.remove('bg-gray-50', 'text-dark');
+                    // 为主要容器添加暗色主题类
+                    document.querySelectorAll('header, .bg-white, .chat-container').forEach(el => {
+                        el.classList.add('dark:bg-gray-800', 'dark:text-white');
+                        el.classList.remove('bg-white', 'text-dark');
+                    });
+                } else {
+                    icon.classList.remove('fa-sun-o');
+                    icon.classList.add('fa-moon-o');
+                    document.body.classList.remove('bg-gray-900', 'text-white');
+                    document.body.classList.add('bg-gray-50', 'text-dark');
+                    // 移除暗色主题类
+                    document.querySelectorAll('header, [class*="dark:bg-gray-800"]').forEach(el => {
+                        el.classList.remove('dark:bg-gray-800', 'dark:text-white');
+                        el.classList.add('bg-white', 'text-dark');
+                    });
+                }
+                
+                // 保存主题偏好到localStorage
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            });
+            
+            // 初始化主题
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                themeToggle.click(); // 触发点击事件来应用暗色主题
+            }
+            
+            // 2. 模型状态显示功能 - 链接图标
+            let connectionStatus = 'connected'; // 模拟连接状态
+            
+            modelStatus.addEventListener('click', function() {
+                // 切换状态并更新UI
+                connectionStatus = connectionStatus === 'connected' ? 'disconnected' : 'connected';
+                
+                if (connectionStatus === 'connected') {
+                    modelStatus.classList.remove('bg-red-100', 'text-red-600');
+                    modelStatus.classList.add('bg-green-100', 'text-green-600');
+                    alert('AI模型已连接，可以正常使用咨询服务。');
+                } else {
+                    modelStatus.classList.remove('bg-green-100', 'text-green-600');
+                    modelStatus.classList.add('bg-red-100', 'text-red-600');
+                    alert('AI模型连接已断开，请检查网络连接后重试。');
+                }
+            });
+            
+            // 添加模型状态悬浮提示
+            modelStatus.title = '点击查看AI模型状态';
+            
+            // 3. 报告生成功能 - 文件图标
+            generateReport.addEventListener('click', function() {
+                reportModal.classList.remove('hidden');
+                
+                // 尝试从localStorage获取学生信息
+                const savedStudentName = localStorage.getItem('studentName');
+                if (savedStudentName) {
+                    studentNameInput.value = savedStudentName;
+                }
+            });
 
-closeReportModalBtn.addEventListener('click', function() {
-    reportModal.classList.add('hidden');
-});
+            document.getElementById('close-report-modal').addEventListener('click', function() {
+                reportModal.classList.add('hidden');
+            });
+            
+            // 4. 设置功能 - 设置图标
+            // 创建设置模态框
+            const settingsModalHtml = `
+                <div id="settings-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+                    <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-4 md:p-6 transform transition-all max-h-[90vh] overflow-y-auto">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg md:text-xl font-bold">设置</h3>
+                            <button id="close-settings-modal" class="text-gray-500 hover:text-gray-700">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="border-b pb-3">
+                                <h4 class="text-sm font-medium text-gray-700 mb-2">用户信息</h4>
+                                <div class="space-y-2">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-500 mb-1">学生姓名</label>
+                                        <input type="text" id="settings-student-name" class="w-full p-2 border border-gray-300 rounded-lg text-sm" value="${localStorage.getItem('studentName') || ''}">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-500 mb-1">联系信息</label>
+                                        <input type="text" id="settings-contact-info" class="w-full p-2 border border-gray-300 rounded-lg text-sm" value="${localStorage.getItem('contactInfo') || ''}">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="border-b pb-3">
+                                <h4 class="text-sm font-medium text-gray-700 mb-2">界面设置</h4>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">暗色主题</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="dark-mode-toggle" class="sr-only peer" ${savedTheme === 'dark' ? 'checked' : ''}>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-700 mb-2">数据管理</h4>
+                                <button id="clear-chat-history" class="w-full p-2 text-left text-sm text-red-600 hover:bg-gray-50 rounded-lg transition-colors">
+                                    <i class="fa fa-trash-o mr-2"></i>清除聊天历史
+                                </button>
+                                <button id="reset-settings" class="w-full p-2 text-left text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors mt-1">
+                                    <i class="fa fa-refresh mr-2"></i>恢复默认设置
+                                </button>
+                            </div>
+                        </div>
+                        <div class="pt-4">
+                            <button id="save-settings" class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors">
+                                保存设置
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 将设置模态框添加到body
+            document.body.insertAdjacentHTML('beforeend', settingsModalHtml);
+            
+            // 获取设置模态框元素
+            const settingsModal = document.getElementById('settings-modal');
+            
+            // 打开设置模态框
+            settingsBtn.addEventListener('click', function() {
+                settingsModal.classList.remove('hidden');
+            });
+            
+            // 关闭设置模态框
+            document.getElementById('close-settings-modal').addEventListener('click', function() {
+                settingsModal.classList.add('hidden');
+            });
+            
+            // 保存设置
+            document.getElementById('save-settings').addEventListener('click', function() {
+                const studentName = document.getElementById('settings-student-name').value;
+                const contactInfo = document.getElementById('settings-contact-info').value;
+                const darkModeEnabled = document.getElementById('dark-mode-toggle').checked;
+                
+                // 保存用户信息
+                if (studentName) {
+                    localStorage.setItem('studentName', studentName);
+                }
+                if (contactInfo) {
+                    localStorage.setItem('contactInfo', contactInfo);
+                }
+                
+                // 更新主题设置
+                if (darkModeEnabled !== (savedTheme === 'dark')) {
+                    themeToggle.click();
+                }
+                
+                alert('设置已保存！');
+                settingsModal.classList.add('hidden');
+            });
+            
+            // 清除聊天历史
+            document.getElementById('clear-chat-history').addEventListener('click', function() {
+                if (confirm('确定要清除所有聊天历史吗？此操作不可撤销。')) {
+                    const chatHistory = document.getElementById('chat-history');
+                    if (chatHistory) {
+                        chatHistory.innerHTML = '';
+                    }
+                    localStorage.removeItem('conversationHistory');
+                    alert('聊天历史已清除！');
+                }
+            });
+            
+            // 恢复默认设置
+            document.getElementById('reset-settings').addEventListener('click', function() {
+                if (confirm('确定要恢复默认设置吗？用户数据将被保留。')) {
+                    document.getElementById('dark-mode-toggle').checked = false;
+                    
+                    // 应用亮色主题
+                    if (savedTheme === 'dark') {
+                        themeToggle.click();
+                    }
+                    
+                    alert('已恢复默认设置！');
+                }
+            });
+            
+            // 暗色主题切换同步
+            document.getElementById('dark-mode-toggle').addEventListener('change', function(e) {
+                const isDark = e.target.checked;
+                const currentTheme = localStorage.getItem('theme');
+                
+                if (isDark !== (currentTheme === 'dark')) {
+                    themeToggle.click();
+                }
+            });
 
-// 生成报告仪表板
-generatePdfBtn.addEventListener('click', function() {
-    const studentName = studentNameInput.value || '未知';
-    const reportTitle = document.getElementById('report-title').value || '职业教育升学咨询报告';
-    const consultationType = consultationTypeSelect.value || '综合咨询';
-    
-    // 生成咨询摘要
-    let summary = '本次咨询围绕职业教育升学相关问题展开，主要涉及';
-    const topics = [];
-    
-    // 分析对话历史生成摘要
-    conversationHistory.forEach(msg => {
-        if (msg.role === 'user') {
-            if ((msg.content.includes('升学') || msg.content.includes('专升本')) && !topics.includes('升学途径')) {
-                topics.push('升学途径');
-            }
-            if (msg.content.includes('专业') && !topics.includes('专业介绍')) {
-                topics.push('专业介绍');
-            }
-            if ((msg.content.includes('院校') || msg.content.includes('学校')) && !topics.includes('院校选择')) {
-                topics.push('院校选择');
-            }
-            if (msg.content.includes('就业') && !topics.includes('就业前景')) {
-                topics.push('就业前景');
-            }
-            if ((msg.content.includes('证书') || msg.content.includes('考试')) && !topics.includes('证书考试')) {
-                topics.push('证书考试');
-            }
-        }
-    });
-    
-    summary += topics.length > 0 ? topics.join('、') + '等方面的内容。' : '多个方面的问题。';
-    summary += '咨询顾问根据学生的具体情况，提供了个性化的建议和指导。';
-    
-    // 生成详细咨询记录
-    let detailsHTML = '';
-    conversationHistory.forEach((msg, index) => {
-        if (msg.role === 'user') {
-            detailsHTML += `<div style="margin-bottom: 15px;"><strong>学生：</strong>${msg.content}</div>`;
-        } else {
-            // 移除AI回复中的HTML标签以获得纯文本
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = formatAIResponse(msg.content);
-            const plainText = tempDiv.textContent || tempDiv.innerText || '';
-            detailsHTML += `<div style="margin-bottom: 15px;"><strong>顾问：</strong>${plainText}</div>`;
-        }
-    });
-    
-    // 将数据存储到localStorage
-    const reportData = {
-        studentName: studentName,
-        reportTitle: reportTitle,
-        consultationType: consultationType,
-        date: new Date().toLocaleDateString('zh-CN'),
-        generatedDate: new Date().toLocaleString('zh-CN'),
-        summary: summary,
-        details: detailsHTML
-    };
-    
-    localStorage.setItem('reportData', JSON.stringify(reportData));
-    
-    // 跳转到报告仪表板页面
-    window.open('report-dashboard.html', '_blank');
-    
-    // 关闭模态框
-    reportModal.classList.add('hidden');
-});
-           
-            // 恢复表单数据
-            restoreFormData();
+            // 生成报告仪表板
+            document.getElementById('generate-pdf').addEventListener('click', async function() {
+                const studentName = studentNameInput.value || '未知';
+                const reportTitle = document.getElementById('report-title').value || '职业教育升学咨询报告';
+                const consultationType = consultationTypeSelect.value || '综合咨询';
+
+                // 生成咨询摘要
+                let summary = '本次咨询围绕职业教育升学相关问题展开，主要涉及';
+                const topics = [];
+                
+                // 初始化对话历史变量，从localStorage获取或使用空数组
+                const conversationHistory = JSON.parse(localStorage.getItem('conversationHistory') || '[]');
+                
+                // 分析对话历史生成摘要
+                conversationHistory.forEach(msg => {
+                    if (msg.role === 'user') {
+                        if ((msg.content.includes('升学') || msg.content.includes('专升本')) && !topics.includes('升学途径')) {
+                            topics.push('升学途径');
+                        }
+                        if (msg.content.includes('专业') && !topics.includes('专业介绍')) {
+                            topics.push('专业介绍');
+                        }
+                        if ((msg.content.includes('院校') || msg.content.includes('学校')) && !topics.includes('院校选择')) {
+                            topics.push('院校选择');
+                        }
+                        if (msg.content.includes('就业') && !topics.includes('就业前景')) {
+                            topics.push('就业前景');
+                        }
+                        if ((msg.content.includes('证书') || msg.content.includes('考试')) && !topics.includes('证书考试')) {
+                            topics.push('证书考试');
+                        }
+                    }
+                });
+                
+                summary += topics.length > 0 ? topics.join('、') + '等方面的内容。' : '多个方面的问题。';
+                summary += '咨询顾问根据学生的具体情况，提供了个性化的建议和指导。';
+                
+                // 生成详细咨询记录
+                let detailsHTML = '';
+                // 对于报告生成，直接使用原始消息内容，避免在报告生成时进行异步压缩
+                conversationHistory.forEach((msg, index) => {
+                    if (msg.role === 'user') {
+                        detailsHTML += `<div style="margin-bottom: 15px;"><strong>学生：</strong>${msg.content}</div>`;
+                    } else {
+                        // 对于报告，直接使用原始内容，不进行异步格式化
+                        detailsHTML += `<div style="margin-bottom: 15px;"><strong>顾问：</strong>${msg.content}</div>`;
+                    }
+                });
+                
+                // 将数据存储到localStorage
+                const reportData = {
+                    studentName: studentName,
+                    reportTitle: reportTitle,
+                    consultationType: consultationType,
+                    date: new Date().toLocaleDateString('zh-CN'),
+                    generatedDate: new Date().toLocaleString('zh-CN'),
+                    summary: summary,
+                    details: detailsHTML
+                };
+                
+                localStorage.setItem('reportData', JSON.stringify(reportData));
+                
+                // 跳转到报告仪表板页面
+                window.open('report-dashboard.html', '_blank');
+                
+                // 关闭模态框
+                reportModal.classList.add('hidden');
+            });
+            
+            // 表单数据恢复逻辑已移除
             
             // 初始化页面
-            scrollToBottom();
-        });
+            const chatHistory = document.getElementById('chat-history');
+            if (chatHistory) {
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            }
     </script>
 </body>
+
 </html>
-    <!-- 信息收集表单模态框 -->
-    <div id="info-collection-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 transform transition-all max-h-[90vh] flex flex-col">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">完善个人信息</h3>
-                <button id="cancel-info" class="text-gray-500 hover:text-gray-700">
-                    <i class="fa fa-times"></i>
-                </button>
-            </div>
-            
-            <form id="student-info-form" class="space-y-4 overflow-y-auto pr-2 flex-grow">
-                <div>
-                    <label class="block text-sm font-medium mb-1">姓名 *</label>
-                    <input type="text" id="student-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" required>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium mb-1">教育阶段 *</label>
-                    <select id="education-level" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" required>
-                        <option value="">请选择</option>
-                        <option value="初中">初中</option>
-                        <option value="高中">高中</option>
-                        <option value="中职">中职</option>
-                        <option value="高职">高职</option>
-                        <option value="其他">其他</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium mb-1">感兴趣的专业领域</label>
-                    <input type="text" id="interest-major" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="例如：计算机、机械、护理等">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">升学目标</label>
-                    <select id="升学目标" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
-                        <option value="">请选择</option>
-                        <option value="升入高职">升入高职</option>
-                        <option value="升入本科">升入本科</option>
-                        <option value="升入专科">升入专科</option>
-                        <option value="其他">其他</option>
-                    </select>
-                </div>
-                
-                <!-- 添加结构化信息收集表格 -->
-                <div class="mt-4">
-                    <h4 class="text-lg font-semibold mb-2">基础身份信息</h4>
-                    <table class="w-full text-sm border-collapse border border-gray-300">
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">性别</td>
-                            <td class="border border-gray-300 p-2">
-                                <select id="gender" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50">
-                                    <option value="">请选择</option>
-                                    <option value="男">男</option>
-                                    <option value="女">女</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">出生日期</td>
-                            <td class="border border-gray-300 p-2">
-                                <input type="date" id="birth-date" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">户籍所在地</td>
-                            <td class="border border-gray-300 p-2">
-                                <div class="flex space-x-2">
-                                    <select id="household-province" class="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50">
-                                        <option value="">请选择省份</option>
-                                        <option value="北京市">北京市</option>
-                                        <option value="上海市">上海市</option>
-                                        <option value="天津市">天津市</option>
-                                        <option value="重庆市">重庆市</option>
-                                        <option value="河北省">河北省</option>
-                                        <option value="山西省">山西省</option>
-                                        <option value="内蒙古自治区">内蒙古自治区</option>
-                                        <option value="辽宁省">辽宁省</option>
-                                        <option value="吉林省">吉林省</option>
-                                        <option value="黑龙江省">黑龙江省</option>
-                                        <option value="江苏省">江苏省</option>
-                                        <option value="浙江省">浙江省</option>
-                                        <option value="安徽省">安徽省</option>
-                                        <option value="福建省">福建省</option>
-                                        <option value="江西省">江西省</option>
-                                        <option value="山东省">山东省</option>
-                                        <option value="河南省">河南省</option>
-                                        <option value="湖北省">湖北省</option>
-                                        <option value="湖南省">湖南省</option>
-                                        <option value="广东省">广东省</option>
-                                        <option value="广西壮族自治区">广西壮族自治区</option>
-                                        <option value="海南省">海南省</option>
-                                        <option value="四川省">四川省</option>
-                                        <option value="贵州省">贵州省</option>
-                                        <option value="云南省">云南省</option>
-                                        <option value="西藏自治区">西藏自治区</option>
-                                        <option value="陕西省">陕西省</option>
-                                        <option value="甘肃省">甘肃省</option>
-                                        <option value="青海省">青海省</option>
-                                        <option value="宁夏回族自治区">宁夏回族自治区</option>
-                                        <option value="新疆维吾尔自治区">新疆维吾尔自治区</option>
-                                    </select>
-                                    <select id="household-city" class="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" disabled>
-                                        <option value="">请先选择省份</option>
-                                    </select>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">联系方式</td>
-                            <td class="border border-gray-300 p-2">
-                                <input type="text" id="contact-info" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入联系方式">
-                            </td>
-                        </tr>
-                    </table>
-                    <p class="text-xs text-gray-500 mt-1">（用途：用于完善学生基本信息档案）</p>
-                </div>
-                
-                <div class="mt-4">
-                    <h4 class="text-lg font-semibold mb-2">中考成绩与排名</h4>
-                    <table class="w-full text-sm border-collapse border border-gray-300">
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">语文分数</td>
-                            <td class="border border-gray-300 p-2">
-                                <input type="number" id="chinese-score" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入语文分数">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">数学分数</td>
-                            <td class="border border-gray-300 p-2">
-                                <input type="number" id="math-score" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入数学分数">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">英语分数</td>
-                            <td class="border border-gray-300 p-2">
-                                <input type="number" id="english-score" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入英语分数">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">总分</td>
-                            <td class="border border-gray-300 p-2">
-                                <input type="number" id="total-score" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入总分">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">该地区总分满分</td>
-                            <td class="border border-gray-300 p-2">
-                                <input type="number" id="total-full-score" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入总分满分">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">全市排名位次</td>
-                            <td class="border border-gray-300 p-2">
-                                <input type="number" id="ranking" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入排名">
-                            </td>
-                        </tr>
-                    </table>
-                    <p class="text-xs text-gray-500 mt-1">（用途：判断志愿梯度与录取概率的核心依据）</p>
-                </div>
-                
-                <div class="mt-4">
-                    <h4 class="text-lg font-semibold mb-2">学业能力证明</h4>
-                    <table class="w-full text-sm border-collapse border border-gray-300">
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">文化课成绩单</td>
-                            <td class="border border-gray-300 p-2">
-                                <textarea id="academic-transcript" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入文化课成绩，如语数外主科+物理/化学等弱项科目"></textarea>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">技能课成绩</td>
-                            <td class="border border-gray-300 p-2">
-                                <input type="text" id="skill-grades" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="如信息技术、实验操作等级">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">获奖证书</td>
-                            <td class="border border-gray-300 p-2">
-                                <textarea id="certificates" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="请输入获奖证书信息，如学科竞赛、技能大赛"></textarea>
-                            </td>
-                        </tr>
-                    </table>
-                    <p class="text-xs text-gray-500 mt-1">（用途：匹配需专业基础的职高方向，如人工智能、物联网）</p>
-                </div>
-                
-                <div class="mt-4">
-                    <h4 class="text-lg font-semibold mb-2">家庭基础条件</h4>
-                    <table class="w-full text-sm border-collapse border border-gray-300">
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">家庭年收入范围</td>
-                            <td class="border border-gray-300 p-2">
-                                <select id="family-income" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50">
-                                    <option value="">请选择</option>
-                                    <option value="5万以下">5万以下</option>
-                                    <option value="5-10万">5-10万</option>
-                                    <option value="10-20万">10-20万</option>
-                                    <option value="20万以上">20万以上</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">是否低保户/建档立卡</td>
-                            <td class="border border-gray-300 p-2">
-                                <select id="low-income" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50">
-                                    <option value="">请选择</option>
-                                    <option value="是">是</option>
-                                    <option value="否">否</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 p-2 bg-gray-50">可承受学费上限</td>
-                            <td class="border border-gray-300 p-2">
-                                <select id="tuition-capacity" class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary/50">
-                                    <option value="">请选择</option>
-                                    <option value="2万以下">2万以下</option>
-                                    <option value="2-3万">2-3万</option>
-                                    <option value="3-5万">3-5万</option>
-                                    <option value="5万以上">5万以上</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </table>
-                    <p class="text-xs text-gray-500 mt-1">（用途：筛选公办免学费或助学金项目）</p>
-                </div>
-                
-                <div class="mt-6">
-                    <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors">
-                        提交信息
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
