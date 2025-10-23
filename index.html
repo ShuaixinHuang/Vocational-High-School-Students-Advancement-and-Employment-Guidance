@@ -27,8 +27,13 @@
         // 修改为默认显示协议页面，除非用户已明确同意不再显示
         // 添加一个新的标志来控制是否永久跳过协议页面
         if (!localStorage.getItem('permanentlySkipOnboarding') || localStorage.getItem('permanentlySkipOnboarding') !== 'true') {
-            // 默认跳转到协议页面
-            window.location.href = 'onboarding.html';
+            // 检查是否已经完成过引导
+            const hasCompletedOnboarding = localStorage.getItem('onboardingCompleted') === 'true';
+            
+            // 只有当既没有永久跳过也没有完成过引导时才跳转到协议页面
+            if (!hasCompletedOnboarding) {
+                window.location.href = 'onboarding.html';
+            }
         }
         
         tailwind.config = {

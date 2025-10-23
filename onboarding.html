@@ -574,10 +574,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             // 检查是否已经永久跳过引导
             const hasPermanentlySkipped = localStorage.getItem('permanentlySkipOnboarding') === 'true';
+            // 检查是否已经完成引导
+            const hasCompletedOnboarding = localStorage.getItem('onboardingCompleted') === 'true';
             
-            // 只在用户明确选择不再显示协议时才跳过
-            // 即使完成过引导，只要没有选择"不再显示"，仍然会显示协议页面
-            if (hasPermanentlySkipped) {
+            // 如果已经永久跳过或者已经完成引导，直接跳转到主页面
+            // 这样可以避免循环跳转问题，确保用户能够顺利进入系统
+            if (hasPermanentlySkipped || hasCompletedOnboarding) {
                 window.location.href = 'index.html';
             } else {
                 // 恢复可能存在的表单数据
