@@ -66,6 +66,18 @@
                 -ms-overflow-style: none;
                 scrollbar-width: none;
             }
+            /* 全局图标样式调整 */
+            .fa {
+                font-size: 1.2rem; /* 增大所有图标的默认大小 */
+            }
+            
+            /* 确保在小屏幕上图标也足够大 */
+            @media (max-width: 768px) {
+                .fa {
+                    font-size: 1.3rem; /* 移动端图标更大 */
+                }
+            }
+            
             .typing-dot {
                 display: inline-block;
                 width: 8px;
@@ -498,23 +510,23 @@
                 </h2>
                 <ul class="space-y-1">
                     <li><a href="study-path.html" class="flex items-center p-1.5 rounded-lg hover:bg-gray-50 transition-colors text-sm">
-                        <i class="fa fa-graduation-cap text-primary mr-2"></i>
+                        <i class="fa fa-graduation-cap text-primary mr-2 text-lg md:text-xl"></i>
                         升学途径
                     </a></li>
                     <li><a href="college-selection.html" class="flex items-center p-1.5 rounded-lg hover:bg-gray-50 transition-colors text-sm">
-                        <i class="fa fa-building text-primary mr-2"></i>
+                        <i class="fa fa-building text-primary mr-2 text-lg md:text-xl"></i>
                         院校选择
                     </a></li>
                     <li><a href="major-introduction.html" class="flex items-center p-1.5 rounded-lg hover:bg-gray-50 transition-colors text-sm">
-                        <i class="fa fa-book text-primary mr-2"></i>
+                        <i class="fa fa-book text-primary mr-2 text-lg md:text-xl"></i>
                         专业介绍
                     </a></li>
                     <li><a href="certificate-exam.html" class="flex items-center p-1.5 rounded-lg hover:bg-gray-50 transition-colors text-sm">
-                        <i class="fa fa-certificate text-primary mr-2"></i>
+                        <i class="fa fa-certificate text-primary mr-2 text-lg md:text-xl"></i>
                         证书考试
                     </a></li>
                     <li><a href="employment-prospects.html" class="flex items-center p-1.5 rounded-lg hover:bg-gray-50 transition-colors text-sm">
-                        <i class="fa fa-briefcase text-primary mr-2"></i>
+                        <i class="fa fa-briefcase text-primary mr-2 text-lg md:text-xl"></i>
                         就业前景
                     </a></li>
 
@@ -523,7 +535,7 @@
 
             <div class="bg-white rounded-xl shadow-sm p-3">
                 <h2 class="text-base font-semibold mb-2 flex items-center">
-                    <i class="fa fa-info-circle text-primary mr-2"></i>
+                    <i class="fa fa-info-circle text-primary mr-2 text-lg"></i>
                     <a href="enrollment-data.html" class="hover:text-primary transition-colors">升学数据</a>
                 </h2>
                 <div class="space-y-3">
@@ -557,7 +569,7 @@
                 </div>
                 <div class="mt-3 text-center">
                     <a href="enrollment-data.html" class="text-primary hover:text-primary/80 text-xs font-medium flex items-center justify-center">
-                        查看详细数据 <i class="fa fa-arrow-right ml-1 text-xs"></i>
+                        查看详细数据 <i class="fa fa-arrow-right ml-1 text-sm"></i>
                     </a>
                 </div>
             </div>
@@ -591,11 +603,11 @@
                                 class="w-full pl-28 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm">
                         </div>
                         <button type="submit" class="bg-primary text-white p-3 rounded-xl">
-                            <i class="fa fa-paper-plane"></i>
-                        </button>
+                    <i class="fa fa-paper-plane text-lg"></i>
+                </button>
                     </form>
                     <div id="voice-input" class="absolute right-16 top-1/2 -translate-y-1/2 cursor-pointer p-1.5 rounded-full hover:bg-gray-100 transition-colors" disabled>
-                        <i class="fa fa-microphone text-gray-400"></i>
+                        <i class="fa fa-microphone text-gray-400 text-lg"></i>
                     </div>
                 </div>
             </div>
@@ -605,7 +617,7 @@
         <aside class="hidden lg:block w-52 lg:w-60 space-y-4 flex-shrink-0">
             <div class="bg-white rounded-xl shadow-sm p-3">
                 <h2 class="text-base font-semibold mb-2 flex items-center">
-                    <i class="fa fa-lightbulb-o text-primary mr-2"></i>
+                    <i class="fa fa-lightbulb-o text-primary mr-2 text-lg"></i>
                     热门问题
                 </h2>
                 <ul class="space-y-2">
@@ -627,7 +639,7 @@
             <div class="bg-white rounded-xl shadow-sm p-3">
                 <a href="timeline.html" class="block">
                     <h2 class="text-base font-semibold mb-2 flex items-center">
-                        <i class="fa fa-calendar text-primary mr-2"></i>
+                        <i class="fa fa-calendar text-primary mr-2 text-lg"></i>
                         重要时间节点
                     </h2>
                     <ul class="space-y-2 text-sm">
@@ -671,7 +683,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg md:text-xl font-bold">生成咨询报告</h3>
                 <button id="close-report-modal" class="text-gray-500 hover:text-gray-700">
-                    <i class="fa fa-times"></i>
+                    <i class="fa fa-times text-lg"></i>
                 </button>
             </div>
             <div class="space-y-3">
