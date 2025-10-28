@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>专宝JOBO一对一职业教育升学智能顾问</title>
+    <title>大学生职业生涯规划指导</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- PDF生成库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -24,13 +24,13 @@
     </style>
     
     <script>
-        // 修改为默认显示协议页面，除非用户已明确同意不再显示
-        // 添加一个新的标志来控制是否永久跳过协议页面
+        // 修改为默认显示引导页面，除非用户已明确同意不再显示
+        // 添加一个新的标志来控制是否永久跳过引导页面
         if (!localStorage.getItem('permanentlySkipOnboarding') || localStorage.getItem('permanentlySkipOnboarding') !== 'true') {
             // 检查是否已经完成过引导
             const hasCompletedOnboarding = localStorage.getItem('onboardingCompleted') === 'true';
             
-            // 只有当既没有永久跳过也没有完成过引导时才跳转到协议页面
+            // 只有当既没有永久跳过也没有完成过引导时才跳转到引导页面
             if (!hasCompletedOnboarding) {
                 window.location.href = 'onboarding.html';
             }
@@ -241,9 +241,9 @@
             
             <div class="flex items-center space-x-2 flex-1 md:flex-initial">
                 <div class="bg-primary text-white p-1 rounded-lg md:p-2">
-                    <img src="1111.png" alt="专宝JOBO智能顾问" loading="lazy" class="h-8 w-8 md:h-12 md:w-12"> <!-- 响应式图片大小 -->
+                    <i class="fa fa-graduation-cap text-white text-2xl md:text-3xl"></i>
                 </div>
-                <h1 class="text-sm md:text-xl lg:text-2xl font-bold text-primary truncate">专宝JOBO一对一职业教育升学智能顾问</h1>
+                <h1 class="text-sm md:text-xl lg:text-2xl font-bold text-primary truncate">大学生职业生涯规划指导</h1>
             </div>
             
             <div class="flex items-center space-x-2 md:space-x-4">
@@ -282,23 +282,23 @@
                         <ul class="space-y-2 text-sm">
                             <li><a href="study-path.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
                                 <i class="fa fa-graduation-cap text-primary mr-2"></i>
-                                升学途径
-                            </a></li>
-                            <li><a href="college-selection.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                                <i class="fa fa-building text-primary mr-2"></i>
-                                院校选择
+                                职业发展路径
                             </a></li>
                             <li><a href="major-introduction.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                                <i class="fa fa-book text-primary mr-2"></i>
-                                专业介绍
+                                <i class="fa fa-briefcase text-primary mr-2"></i>
+                                职业方向解析
+                            </a></li>
+                            <li><a href="employment-prospects.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fa fa-line-chart text-primary mr-2"></i>
+                                就业市场分析
                             </a></li>
                             <li><a href="certificate-exam.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
                                 <i class="fa fa-certificate text-primary mr-2"></i>
-                                证书考试
+                                职业证书规划
                             </a></li>
-                            <li><a href="employment-prospects.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                                <i class="fa fa-briefcase text-primary mr-2"></i>
-                                就业前景
+                            <li><a href="report-dashboard.html" class="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fa fa-file-text-o text-primary mr-2"></i>
+                                职业规划报告
                             </a></li>
                             </ul>
                         </div>
@@ -306,34 +306,34 @@
                     <div class="bg-white rounded-xl shadow-sm p-4">
                         <h3 class="text-base font-semibold mb-3 flex items-center">
                             <i class="fa fa-info-circle text-primary mr-2"></i>
-                            <a href="enrollment-data.html" class="hover:text-primary transition-colors">升学数据</a>
+                            <a href="enrollment-data.html" class="hover:text-primary transition-colors">就业数据</a>
                         </h3>
                         <div class="space-y-3">
                             <div>
                                 <div class="flex justify-between text-xs mb-1">
-                                    <span>职业教育升学率</span>
-                                    <span class="font-semibold">68.5%</span>
+                                    <span>本科毕业生就业率</span>
+                                    <span class="font-semibold">91.5%</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                    <div class="bg-primary h-1.5 rounded-full" style="width: 68.5%"></div>
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 91.5%"></div>
                                 </div>
                             </div>
                             <div>
                                 <div class="flex justify-between text-xs mb-1">
-                                    <span>热门专业就业率</span>
-                                    <span class="font-semibold">89.2%</span>
+                                    <span>热门行业起薪水平</span>
+                                    <span class="font-semibold">85.7%</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                    <div class="bg-secondary h-1.5 rounded-full" style="width: 89.2%"></div>
+                                    <div class="bg-secondary h-1.5 rounded-full" style="width: 85.7%"></div>
                                 </div>
                             </div>
                             <div>
                                 <div class="flex justify-between text-xs mb-1">
-                                    <span>技能证书认可度</span>
-                                    <span class="font-semibold">92.3%</span>
+                                    <span>职业规划满意度</span>
+                                    <span class="font-semibold">88.3%</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                    <div class="bg-accent h-1.5 rounded-full" style="width: 92.3%"></div>
+                                    <div class="bg-accent h-1.5 rounded-full" style="width: 88.3%"></div>
                                 </div>
                             </div>
                         </div>
@@ -347,15 +347,15 @@
                         <ul class="space-y-2">
                             <li class="text-xs">
                                 <a href="answer1.html" class="block p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-                                    职业高中毕业生如何升入本科院校？
+                                    如何根据专业规划适合自己的职业发展路径？
                                 </a></li>
                             <li class="text-xs">
                                 <a href="answer2.html" class="block p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-                                    哪些职业技能证书可以获得升学加分？
+                                    大学生应该考取哪些职业证书提升竞争力？
                                 </a></li>
                             <li class="text-xs">
                                 <a href="answer3.html" class="block p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-                                    专升本考试需要准备哪些科目？
+                                    如何准备一份优秀的求职简历和面试？
                                 </a></li>
                         </ul>
                     </div>
@@ -383,7 +383,7 @@
             <div class="h-80 overflow-y-auto p-4 border border-gray-200 rounded-lg mb-6 bg-gray-50">
                 <div class="text-sm text-gray-700 space-y-4">
                     <h3 class="font-semibold text-dark">隐私政策</h3>
-                    <p>欢迎使用专宝JOBO一对一职业教育升学智能顾问服务（以下简称"本服务"）。在您使用本服务前，请仔细阅读并了解本隐私政策的全部内容。</p>
+                    <p>欢迎使用大学生职业生涯规划指导服务（以下简称"本服务"）。在您使用本服务前，请仔细阅读并了解本隐私政策的全部内容。</p>
                     
                     <h4 class="font-semibold">1. 信息收集与使用</h4>
                     <p>我们收集的信息可能包括但不限于您的姓名、联系方式、教育背景、学习成绩等个人信息。这些信息将用于为您提供个性化的咨询服务、生成相关报告和分析结果。</p>
@@ -582,8 +582,8 @@
         <section class="flex-grow flex flex-col" style="max-height: calc(100vh - 180px);">
             <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 h-full flex flex-col chat-container">
                 <div class="mb-4 md:mb-6">
-                    <h2 class="text-xl md:text-2xl font-bold mb-2">专宝JOBO智能咨询助手</h2>
-                    <p class="text-gray-600 text-sm md:text-base">我是您的专宝JOBO智能咨询助手，专注于职业教育升学咨询。请问有什么可以帮助您？</p>
+                    <h2 class="text-xl md:text-2xl font-bold mb-2">生涯规划智能咨询助手</h2>
+        <p class="text-gray-600 text-sm md:text-base">我是您的生涯规划智能咨询助手，专注于大学生职业发展咨询。请问有什么可以帮助您？</p>
                 </div>
                 
                 <!-- 聊天历史区域 -->
@@ -720,7 +720,7 @@
         <div style="width: 210mm; min-height: 297mm; padding: 20mm; font-family: 'Microsoft YaHei', 'SimHei', '微软雅黑', '黑体', sans-serif; font-size: 14px; line-height: 1.5; background-color: #ffffff;">
             <div class="text-center mb-10">
                 <h1 style="font-size: 24px; margin-bottom: 10px; font-weight: bold;">职业教育升学咨询报告</h1>
-                <p style="font-size: 16px;">专宝JOBO职业教育升学智能顾问</p>
+                <p style="font-size: 16px;">大学生职业生涯规划指导</p>
             </div>
             
             <div style="margin-bottom: 15px;">
@@ -745,7 +745,7 @@
             
             <div style="margin-top: 30px; text-align: right; font-size: 12px; position: absolute; bottom: 20mm; right: 20mm; width: calc(100% - 40mm);">
                 <p>报告生成于：<span id="pdf-generated-date">--</span></p>
-                <p>专宝JOBO职业教育升学智能顾问 © 2025</p>
+                <p>大学生职业生涯规划指导 © 2025</p>
             </div>
         </div>
     </div>
@@ -1160,11 +1160,11 @@
                     welcomeMessage.className = 'message message-bot';
                     welcomeMessage.innerHTML = `
                         <div class="message-header">
-                            <span class="message-sender">专宝JOBO</span>
+                            <span class="message-sender">生涯规划助手</span>
                             <span class="message-time">${new Date().toLocaleTimeString()}</span>
                         </div>
                         <div class="message-content">
-                            <p>您好！我是专宝JOBO智能咨询助手，很高兴为您提供职业教育升学相关的咨询服务。</p>
+                            <p>您好！我是生涯规划智能咨询助手，很高兴为您提供大学生职业发展相关的咨询服务。</p>
                             <p>请问您有什么问题需要了解？</p>
                         </div>
                     `;
@@ -1583,7 +1583,7 @@
                 }
                 
                 // 添加院士模式的标识和专家建议风格
-                answer += "\n\n[注：此回答由专宝JOBO院士专家数据库提供，内容经过权威专家审核]";
+                answer += "\n\n[注：此回答由职业生涯规划专家数据库提供，内容经过权威专家审核]";
                 
                 return answer;
             }
