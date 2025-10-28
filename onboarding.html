@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>欢迎使用 - 大学生职业生涯规划指导</title>
+    <title>大学生职业生涯规划 - 欢迎使用</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     
@@ -58,9 +58,9 @@
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <i class="fa fa-graduation-cap text-primary text-2xl"></i>
-                <h1 class="text-xl font-bold text-dark">生涯规划助手</h1>
+                <h1 class="text-xl font-bold text-dark">大学生职业生涯规划</h1>
             </div>
-            <div class="text-sm text-gray-500">大学生职业发展指导平台</div>
+            <div class="text-sm text-gray-500">个性化职业规划服务</div>
         </div>
     </header>
 
@@ -91,7 +91,7 @@
                     <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                         <i class="fa fa-handshake-o text-primary text-3xl"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-dark mb-2">欢迎使用生涯规划助手</h2>
+                    <h2 class="text-2xl font-bold text-dark mb-2">欢迎使用大学生职业生涯规划</h2>
                     <p class="text-gray-600">我们将为您提供个性化的大学生职业生涯规划指导</p>
                 </div>
                 
@@ -101,7 +101,7 @@
                             <i class="fa fa-lightbulb-o text-primary"></i>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-dark">个性化职业规划</h3>
+                            <h3 class="font-semibold text-dark">个性化大学生职业规划</h3>
                             <p class="text-sm text-gray-600">根据您的专业背景和兴趣提供定制化职业建议</p>
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                             <i class="fa fa-book text-secondary"></i>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-dark">职业资料库</h3>
+                            <h3 class="font-semibold text-dark">大学生职业资料库</h3>
                             <p class="text-sm text-gray-600">丰富的行业、职业和发展路径信息</p>
                         </div>
                     </div>
@@ -121,7 +121,7 @@
                             <i class="fa fa-graduation-cap text-accent"></i>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-dark">就业指导</h3>
+                            <h3 class="font-semibold text-dark">大学生就业指导</h3>
                             <p class="text-sm text-gray-600">帮助您提升就业竞争力，规划职业发展</p>
                         </div>
                     </div>
@@ -186,8 +186,8 @@
 
             <!-- 步骤3：信息收集 -->
             <div id="step3" class="step-content hidden">
-                <h2 class="text-xl font-bold text-dark mb-4">完善个人信息</h2>
-                <p class="text-sm text-gray-500 mb-6">请填写以下信息，帮助我们为您提供更精准的职业生涯规划服务</p>
+                <h2 class="text-xl font-bold text-dark mb-4">收集专业信息</h2>
+                <p class="text-sm text-gray-500 mb-6">请填写以下专业相关信息，帮助我们为您提供更精准的职业生涯规划服务</p>
                 
                 <form id="student-info-form" class="space-y-6">
                     <div>
@@ -196,29 +196,41 @@
                     </div>
                     
                     <div>
+                        <label class="block text-sm font-medium mb-1 text-gray-700">目前专业 <span class="text-red-500">*</span></label>
+                        <input type="text" id="current-major" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="例如：计算机科学与技术、机械工程、护理学等" required>
+                    </div>
+                    
+                    <div>
                         <label class="block text-sm font-medium mb-1 text-gray-700">教育阶段 <span class="text-red-500">*</span></label>
                         <select id="education-level" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" required>
                             <option value="">请选择</option>
-                            <option value="初中">初中</option>
-                            <option value="高中">高中</option>
-                            <option value="中职">中职</option>
-                            <option value="高职">高职</option>
+                            <option value="本科一年级">本科一年级</option>
+                            <option value="本科二年级">本科二年级</option>
+                            <option value="本科三年级">本科三年级</option>
+                            <option value="本科四年级">本科四年级</option>
+                            <option value="专科一年级">专科一年级</option>
+                            <option value="专科二年级">专科二年级</option>
+                            <option value="专科三年级">专科三年级</option>
+                            <option value="研究生">研究生</option>
                             <option value="其他">其他</option>
                         </select>
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium mb-1 text-gray-700">感兴趣的专业领域</label>
-                        <input type="text" id="interest-major" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="例如：计算机、机械、护理等">
+                        <label class="block text-sm font-medium mb-1 text-gray-700">感兴趣的专业方向</label>
+                        <input type="text" id="interest-major" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="例如：人工智能、软件开发、市场营销等">
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium mb-1 text-gray-700">升学目标</label>
-                        <select id="升学目标" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        <label class="block text-sm font-medium mb-1 text-gray-700">职业发展目标</label>
+                        <select id="career-goal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
                             <option value="">请选择</option>
-                            <option value="升入高职">升入高职</option>
-                            <option value="升入本科">升入本科</option>
-                            <option value="升入专科">升入专科</option>
+                            <option value="技术研发">技术研发</option>
+                            <option value="产品管理">产品管理</option>
+                            <option value="市场营销">市场营销</option>
+                            <option value="人力资源">人力资源</option>
+                            <option value="继续深造">继续深造</option>
+                            <option value="创业">创业</option>
                             <option value="其他">其他</option>
                         </select>
                     </div>
@@ -301,7 +313,7 @@
                             返回
                         </button>
                         <button type="submit" class="flex-1 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">
-                            完成并进入系统
+                            完成并进入大学生职业生涯规划
                         </button>
                     </div>
                     
@@ -401,9 +413,10 @@
         // 保存表单数据到localStorage
         function saveFormData() {
             localStorage.setItem('studentName', document.getElementById('student-name').value);
+            localStorage.setItem('currentMajor', document.getElementById('current-major').value);
             localStorage.setItem('educationLevel', document.getElementById('education-level').value);
             localStorage.setItem('interestMajor', document.getElementById('interest-major').value);
-            localStorage.setItem('升学目标', document.getElementById('升学目标').value);
+            localStorage.setItem('careerGoal', document.getElementById('career-goal').value);
             localStorage.setItem('gender', document.getElementById('gender').value);
             localStorage.setItem('birthDate', document.getElementById('birth-date').value);
             localStorage.setItem('householdProvince', document.getElementById('household-province').value);
@@ -498,12 +511,19 @@
             
             // 获取必填字段
             const studentName = document.getElementById('student-name').value.trim();
+            const currentMajor = document.getElementById('current-major').value.trim();
             const educationLevel = document.getElementById('education-level').value;
             
             // 验证必填字段
             if (!studentName) {
                 alert('请输入姓名');
                 document.getElementById('student-name').focus();
+                return;
+            }
+            
+            if (!currentMajor) {
+                alert('请输入目前专业');
+                document.getElementById('current-major').focus();
                 return;
             }
             
@@ -571,24 +591,17 @@
         });
 
         // 初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            // 检查是否已经永久跳过引导
-            const hasPermanentlySkipped = localStorage.getItem('permanentlySkipOnboarding') === 'true';
-            // 检查是否已经完成引导
-            const hasCompletedOnboarding = localStorage.getItem('onboardingCompleted') === 'true';
-            
-            // 如果已经永久跳过或者已经完成引导，直接跳转到主页面
-            // 这样可以避免循环跳转问题，确保用户能够顺利进入系统
-            if (hasPermanentlySkipped || hasCompletedOnboarding) {
-                window.location.href = 'index.html';
-            } else {
+            document.addEventListener('DOMContentLoaded', function() {
+                // 移除localStorage中的引导完成标志，确保用户能看到引导页面
+                localStorage.removeItem('onboardingCompleted');
+                localStorage.removeItem('permanentlySkipOnboarding');
+                
                 // 恢复可能存在的表单数据
                 restoreFormData();
                 
                 // 显示第一步
                 showStep(1);
-            }
-        });
+            });
     </script>
 </body>
 </html>
